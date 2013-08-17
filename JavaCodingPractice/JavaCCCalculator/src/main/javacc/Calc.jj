@@ -1,0 +1,117 @@
+options{
+	STATIC = false;
+}
+
+PARSER_BEGIN(Calc)
+package CalcParser;
+
+import java.io.StringReader;
+import java.io.Reader;
+
+public class Calc
+{
+  public Calc(String s) 
+  {
+    this((Reader)(new StringReader(s)));
+  }
+  public static void main(String[] args) throws ParseException, TokenMgrError{
+    Calc parser = new Calc(args[0]);
+    parser.Start();
+  }
+  double previousValue = 0.0;
+}
+PARSER_END(Calc)
+
+SKIP:
+{
+  " "
+}
+
+TOKEN:
+{
+  <  EOL :
+  "\n"
+  |"\r"
+  |"\r\n" >
+}
+
+TOKEN:
+{
+  < PLUS : "+">
+| < MINUS : "-">
+| < TIMES : "*">
+| < DIVIDE : "/">
+| < OPEN_PAR : "(">
+| < CLOSE_PAR : ")">
+| < PREVIOUS : "$">
+}
+
+TOKEN:
+{
+  < NUMBER : <DIGITS>|<DIGITS>"."<DIGITS>|<DIGITS>"."|"."<DIGITS> >
+}
+
+TOKEN:
+{
+  < #DIGITS: (["0"-"9"])+ >}
+
+void Start() throws NumberFormatException:
+{
+}
+{
+  (
+    previousValue=Expression()
+    <EOL>
+    {System.out.println(previousValue);}  )*
+  <EOF>
+}
+
+double Expression() throws NumberFormatException:
+{
+  double i;
+  double value;}
+{
+  value = Term()
+  (
+    <PLUS>
+    i=Term()
+    {value+=i;}
+  |
+  	<MINUS>
+  	i=Term()
+  	{value-=i;}  )*
+  {return value;}}
+
+double Term() throws NumberFormatException:
+{
+  double i;
+  double value;}
+{
+  value = Primary()
+  (
+    <TIMES>
+    i=Primary()
+    {value*=i;}
+  |
+    <DIVIDE>
+    i=Primary()
+    {value/=i;}  )*
+  {return value;}}
+
+double Primary() throws NumberFormatException:
+{
+    Token t;
+    double d;}
+{
+	t=<NUMBER>
+	{return Double.parseDouble(t.image);}
+	|
+	<PREVIOUS>
+	{return previousValue;}
+	|
+	<OPEN_PAR> d=Expression() <CLOSE_PAR>
+	{return d;}
+	|
+	<MINUS> d=Primary()
+	{return d;}
+}
