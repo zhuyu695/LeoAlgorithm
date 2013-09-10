@@ -1,5 +1,6 @@
 package Algorithm;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.Stack;
 
@@ -285,6 +286,61 @@ public class Practice {
     	return result.toCharArray();
     }
     
+    /*---------------------------------7.1 String multiplication--------------------------*/
+    public char[] reverseCharArr(char[] charArr) {
+    	int i = 0;
+    	while (i < charArr.length / 2) {
+    		char tmp = charArr[i];
+    		charArr[i] = charArr[charArr.length - 1 - i];
+    		charArr[charArr.length - 1 - i] = tmp;
+    		++i;
+    	}
+    	return charArr;
+    }
+    
+    public char[] StringMultiply(char[] num1, char[] num2) {
+    	if (num1.length < num2.length) {
+    		return StringMultiply(num2, num1);
+    	}
+    	num1 = reverseCharArr(num1);
+    	num2 = reverseCharArr(num2);
+    	
+    	char[] result = new char[num1.length + num2.length + 1];
+    	for (int k = 0; k < result.length; ++k) {
+    		result[k] = '0';
+    	}
+    	
+    	for (int i = 0; i < num2.length; ++i) {
+    		if (num2[i] == '0') {
+    			continue;
+    		}
+    		int mul = toInt(num2[i]);
+    		int carry = 0;
+    		int j = 0;
+    		for (; j < num1.length; ++j) {
+    			int no1 = toInt(num1[j]);
+    			int sum = no1 * mul + carry + toInt(result[i + j]);
+    			result[i + j] = toChar(sum % 10);
+    			carry = sum / 10;
+    		}
+    		j = j + i;
+        	while (carry > 0) {
+        		result[j] = toChar(carry % 10);
+        		carry = carry / 10;
+        		++j;
+        	}
+    	}
+    	int finalLen = result.length;
+    	while (result[finalLen - 1] == '0') {
+    		--finalLen;
+    	}
+    	char[] finalResult = new char[finalLen];
+    	for (int i = 0; i < finalLen; ++i) {
+    		finalResult[i] = result[i];
+    	}
+    	return reverseCharArr(finalResult);
+    }
+    
     /*---------------------------------8. get Sentence----------------------------*/
     /* getSentence("iamastudentfromwaterloo", {"from, "waterloo", "hi", "am", "yes", "i", "a", "student"}) */
     /*-> "i am a student from waterloo"*/    
@@ -351,5 +407,232 @@ public class Practice {
     		}
     		return result;
     	}
+    }
+    
+    /*-----------------------------11. string to integer----------------------------------
+     * 1. The function first discards as many whitespace characters as necessary until the first 
+     * non-whitespace character is found. Then, starting from this character, takes an optional 
+     * initial plus or minus sign followed by as many numerical digits as possible, and interprets 
+     * them as a numerical value.
+     * 2. The string can contain additional characters after those that form the integral number, 
+     * which are ignored and have no effect on the behavior of this function.
+     * 3. If the first sequence of non-whitespace characters in str is not a valid integral number, 
+     * or if no such sequence exists because either str is empty or it contains only whitespace 
+     * characters, no conversion is performed.
+     * 4. If no valid conversion could be performed, a zero value is returned. If the correct value 
+     * is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is 
+     * returned.*/
+    public int stringToInt(String input) {
+    	input = input.trim();
+    	boolean negative = false;
+    	int pivot = 0;
+    	if (input.charAt(0) == '-') {
+    		negative = true;
+    		pivot = 1;
+    	} else if (input.charAt(0) == '+') {
+    		pivot = 1;
+    	}
+    	long result = 0;
+    	for (; pivot < input.length(); ++pivot) {
+    		if (input.charAt(pivot) < '0' || input.charAt(pivot) > '9') {
+    			if (result > 0) {
+    				return (int) result;
+    			}
+    			throw new NumberFormatException("Invalid number: " + input.charAt(pivot));
+    		}
+    		result *= 10;
+    		result += (input.charAt(pivot) - '0');
+    		if (result > Integer.MAX_VALUE) {
+    			throw new NumberFormatException("Out of bound of integer");
+    		}
+    	}
+    	if (negative) {
+    		result *= -1;
+    	}
+    	return (int) result;
+    }
+    
+    /*-------------------------------12. validate string is numeric using finite automata-------------------------------*/
+    public enum INPUT {
+    	SPACE(0), DIGIT(1), SIGN(2), E(3), DOT(4), OTHERS(5);
+    	private int value;
+    	private INPUT(int val) {
+    		value = val;
+    	}
+    	public int getVal() {
+    		return value;
+    	}
+    } 
+    public boolean validateNumeric(String input) {
+    	input = input.trim();
+    	ArrayList<ArrayList<Integer>> status = new ArrayList<ArrayList<Integer>>();
+    	for (int i = 0; i < 6; ++i) {
+    		status.add(new ArrayList<Integer>(Arrays.asList(-1, -1, -1, -1 , -1, -1)));
+    	}
+    	
+    	status.get(0).set(INPUT.SPACE.getVal(), 0);
+    	status.get(0).set(INPUT.DIGIT.getVal(), 1);
+    	status.get(0).set(INPUT.DOT.getVal(), 1);
+    	status.get(0).set(INPUT.OTHERS.getVal(), -1);
+    	status.get(0).set(INPUT.SIGN.getVal(), 1);
+    	status.get(0).set(INPUT.E.getVal(), 2);
+    	
+    	status.get(1).set(INPUT.SPACE.getVal(), 3);
+    	status.get(1).set(INPUT.DIGIT.getVal(), 1);
+    	status.get(1).set(INPUT.DOT.getVal(), 2);
+    	status.get(1).set(INPUT.OTHERS.getVal(), -1);
+    	status.get(1).set(INPUT.SIGN.getVal(), -1);
+    	status.get(1).set(INPUT.E.getVal(), 2);
+    	
+    	status.get(2).set(INPUT.SPACE.getVal(), 3);
+    	status.get(2).set(INPUT.DIGIT.getVal(), 2);
+    	status.get(2).set(INPUT.DOT.getVal(), -1);
+    	status.get(2).set(INPUT.E.getVal(), -1);
+    	status.get(2).set(INPUT.OTHERS.getVal(), -1);
+    	status.get(2).set(INPUT.SIGN.getVal(), -1);
+    	
+    	status.get(3).set(INPUT.SPACE.getVal(), 3);
+    	status.get(3).set(INPUT.DIGIT.getVal(), -1);
+    	status.get(3).set(INPUT.DOT.getVal(), -1);
+    	status.get(3).set(INPUT.E.getVal(), -1);
+    	status.get(3).set(INPUT.OTHERS.getVal(), -1);
+    	status.get(3).set(INPUT.SIGN.getVal(), -1);
+    	
+    	int stage = 0;
+    	for (char ch : input.toCharArray()) {
+    		INPUT cur = checkInput(ch);
+    		if (status.get(stage).get(cur.getVal()) == -1) {
+    			return false;
+    		} else {
+    			stage = status.get(stage).get(cur.getVal());
+    		}
+    	}
+    	return true;
+    }
+    public INPUT checkInput(char ch) {
+    	if (ch >= '0' && ch <= '9') return INPUT.DIGIT;
+    	if (ch ==' ') return INPUT.SPACE;
+    	if (ch == '+' || ch == '-') return INPUT.SIGN;
+    	if (ch == 'e' || ch == 'E') return INPUT.E;
+    	if (ch == '.') return INPUT.DOT;
+    	return INPUT.OTHERS;
+    }
+    
+    /*--------------------------13. Merge Sorted Array, assume one array have enough space------------------------*/
+    public int[] mergeSortedArray(int a[], int b[]) {
+    	int i = a.length - 1 - b.length, j = b.length - 1, k = a.length - 1;
+    	while (i >= 0 && j >= 0) {
+    		if (a[i] < b[j]) {
+    			a[k] = b[j];
+    			--j;
+    		} else {
+    			a[k] = a[i];
+    			--i;
+    		}
+    		--k;
+    	}
+    	while (j >= 0) {
+    		a[k] = a[j];
+    		--j; --k;
+    	}
+    	return a;
+    }
+    
+    /*-------------------------14. Plus one for int array------------------------------*/
+    public ArrayList<Integer> plusOneForArray(ArrayList<Integer> origin) {
+    	if (origin == null || origin.size() == 0) {
+    		return null;
+    	}
+    	int carry = 1;
+    	for (int len = origin.size() - 1; len >= 0; --len) {
+    		int sum = origin.get(len) + carry;
+    		origin.set(len, sum % 10);
+    		carry = sum / 10;
+    	}
+    	if (carry > 1) {
+    		origin.add(0, carry);
+    	}
+    	return origin;
+    }
+    
+    /*-------------------------15. Remove Duplicates of sorted array in place----------------------------*/
+    public int[] removeDuplicate(int in[]) {
+    	if (in.length == 0) 
+    		return null;
+    	int runner = 1;
+    	int lastElm = 0;
+    	while (runner < in.length) {
+    		if (in[runner] != in[lastElm]) {
+    			++lastElm;
+    			in[lastElm] = in[runner];
+    			++runner;
+    		} else {
+    			++runner;
+    		}
+    	}
+    	return Arrays.copyOf(in, lastElm + 1);
+    }
+    
+    /*-------------------------16. Remove all values equal to given value-----------------------*/
+    public int removeSpecValue(int in[], int val) {
+    	if (in.length == 0) {
+    		return 0;
+    	}
+    	int runner = 0;
+    	int lastInd = 0;
+    	while (runner < in.length) {
+    		if (in[runner] != val) {
+    			in[lastInd] = in[runner];
+    			++lastInd;
+    			++runner;
+    		} else {
+    			++runner;
+    		}
+    	}
+    	return lastInd;
+    }
+    
+    /*17. Given a sorted array of integers, find the starting and ending position of a given target value.
+     * For example,
+	 * Given [5, 7, 7, 8, 8, 10] and target value 8,
+	 * return [3, 4].
+     */
+    public class Pair {
+    	public int elm1;
+    	public int elm2;
+    }
+    
+    public Pair getRangeForSpec(int in[], int val) {
+    	Pair p = new Pair();
+    	p.elm1 = -1;
+    	p.elm2 = -1;
+    	
+    	int low = 0;
+    	int high = in.length - 1;
+    	while (low < high) {
+    		int mid = (high + low) / 2;
+    		if (in[mid] < val) {
+    			low = mid + 1;
+    		} else {
+    			high = mid;
+    		}
+    	}
+    	if (in[low] != val) {
+    		return p;
+    	}
+    	
+    	high = in.length;
+    	p.elm1 = low;
+    	
+    	while(low < high) {
+    		int mid = (high + low) / 2;
+    		if (in[mid] > val) {
+    			high = mid;
+    		} else {
+    			low = mid + 1;
+    		}
+    	}
+    	p.elm2 = high - 1;
+    	return p;
     }
 }

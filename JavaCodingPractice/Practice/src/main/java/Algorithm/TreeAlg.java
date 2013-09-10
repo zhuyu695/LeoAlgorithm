@@ -31,4 +31,16 @@ public class TreeAlg {
 		}
 		return true;
 	}
+	
+	/*-------------------------convert sorted array to binary tree-------------------------*/
+	public BinaryTreeNode convertToBST(int[] sortedArr, int start, int end) {
+		if (start < 0 || start >= end || end > sortedArr.length)
+			return null;
+		int mid = (end + start) / 2;
+		BinaryTreeNode root = new BinaryTreeNode();
+		root.value = sortedArr[mid];
+		root.left = convertToBST(sortedArr, start, mid - 1);
+		root.right = convertToBST(sortedArr, mid + 1, end);
+		return root;
+	}
 }
