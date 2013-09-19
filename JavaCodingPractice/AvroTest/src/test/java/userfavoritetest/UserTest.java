@@ -1,7 +1,6 @@
 package userfavoritetest;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,21 +26,22 @@ import org.junit.Test;
 
 import userfavorite.User;
 
+
 public class UserTest {
 	String avscPath = "src/main/resources/User.avsc";
 	Parser schemaParser = new Schema.Parser();
 	Schema schema;
-	
+
 	@Before
 	public void setUp() throws IOException {
 	schema = schemaParser.parse(new File(avscPath));
 	}
-	
+
 	@Test
 	public void prettifySchema() throws IOException {
 	System.out.println(schema.toString(true));
 	}
-	
+
 	@Test
 	public void createGenericRecordAndSerializeThenDeserialize()
 		throws IOException {
@@ -50,7 +50,7 @@ public class UserTest {
 		datum.put("name", new Utf8("Aeo"));
 		datum.put("favorite_color", new Utf8("Red"));
 		datum.put("favorite_number", 6);
-		
+
 		// serialize
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(
@@ -59,18 +59,18 @@ public class UserTest {
 		writer.write(datum, encoder);
 		encoder.flush();
 		out.close();
-		
+
 		// deserialize
 		DatumReader<GenericRecord> reader = new GenericDatumReader<GenericRecord>(
 		schema);
 		Decoder decoder = DecoderFactory.get().binaryDecoder(out.toByteArray(),
 		null);
 		GenericRecord result = reader.read(null, decoder);
-		
+
 		assertEquals(result.get("name").toString(), "Aeo");
 		assertEquals(result.get("favorite_number"), 6);
 	}
-	
+
 	@Test
 	public void createPairAndSerializeThenDeserialize() throws IOException {
 		// given
@@ -78,7 +78,7 @@ public class UserTest {
 		datum.setName("Val");
 		datum.setColor("Green");
 		datum.setNum(8);
-		
+
 		// serialize
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		DatumWriter<User> writer = new SpecificDatumWriter<User>(User.class);
@@ -86,13 +86,13 @@ public class UserTest {
 		writer.write(datum, encoder);
 		encoder.flush();
 		out.close();
-		
+
 		// deserialize
 		DatumReader<User> reader = new SpecificDatumReader<User>(User.class);
 		Decoder decoder = DecoderFactory.get().binaryDecoder(out.toByteArray(),
 		null);
 		User result = reader.read(null, decoder);
-		
+
 		assertEquals(result.getName(), "Val");
 		assertEquals(result.getNum(), 8);
 	}

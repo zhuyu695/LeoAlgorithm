@@ -9,7 +9,7 @@
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<avro.version>1.6.2</avro.version>
   </properties>
-	
+
   <dependencies>
   	<dependency>
       <groupId>junit</groupId>
@@ -27,6 +27,21 @@
 	  <artifactId>avro-maven-plugin</artifactId>
 	  <version>${avro.version}</version>
 	</dependency>
+	<dependency>
+	  <groupId>org.apache.avro</groupId>
+	  <artifactId>avro</artifactId>
+	  <version>1.7.5</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.avro</groupId>
+	  <artifactId>avro-mapred</artifactId>
+	  <version>1.7.5</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.hadoop</groupId>
+	  <artifactId>hadoop-core</artifactId>
+	  <version>0.20.2</version>
+	</dependency>
   </dependencies>
   <build>
 	<plugins>
@@ -36,10 +51,12 @@
 		  <version>1.7.4</version>
 		  <executions>
 		    <execution>
+		      <!-- bind it to nowhere otherwise User.java will be created
 		      <phase>generate-sources</phase>
 		      <goals>
 		        <goal>schema</goal>
 		      </goals>
+		      -->
 		      <configuration>
 		        <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>
 		        <outputDirectory>${project.basedir}/src/main/resources/avro</outputDirectory>
@@ -79,6 +96,15 @@
 					</lifecycleMappingMetadata>
 				</configuration>
 			</plugin>
+			<plugin>
+                  <artifactId>maven-compiler-plugin</artifactId>
+                  <version>2.3.2</version>
+                  <configuration>
+                      <source>1.6</source>
+                      <target>1.6</target>
+                      <compilerArgument></compilerArgument>
+                  </configuration>
+              </plugin>
 		</plugins>
 	</pluginManagement>
   </build>
