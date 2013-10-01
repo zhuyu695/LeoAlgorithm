@@ -5,21 +5,21 @@ import java.util.Set;
 import java.util.Stack;
 
 public class Practice {
-    
+
     /*----------------1. Print permutation of a string----------------*/
     public ArrayList<String> getPermuation(String str) {
 		if (str == null)
 		    return null;
-	
+
 		ArrayList<String> permutations = new ArrayList<String> ();
 		if (str.length() == 0) {
 		    permutations.add("");            // add empty string
 		    return permutations;
 		}
-	
+
 		char first  = str.charAt(0);
 		String remainder = str.substring(1);
-	
+
 		ArrayList<String> words  = getPermuation (remainder);
 		for (String word: words) {
 		    for (int j =0; j <=word.length();  j++) {
@@ -29,13 +29,13 @@ public class Practice {
 		}
 		return permutations;
     }
-    
+
     private String insertCharAt (String word, char c, int pos) {
 		String start = word.substring (0,pos);
 		String end  = word.substring(pos);
 		return start + c + end;
     }
-    
+
     /*----------------2. Print Permutation of string----------------*/
     public void permutation(String str) {
     	permutation("", str);
@@ -46,7 +46,7 @@ public class Practice {
 		if (n == 0) System.out.println(prefix);
 		else {
 		    for (int i = 0; i < n; i++) {
-			permutation(prefix + str.charAt(i), str.substring(0,i) + str.substring(i+1, n));
+		    	permutation(prefix + str.charAt(i), str.substring(0,i) + str.substring(i+1, n));
 		    }
 		}
     }
@@ -74,12 +74,12 @@ public class Practice {
 	    return false;
 	} else if (nodeSmall == null) {
 	    return true;
-	} else if (nodeBig.value().equals(nodeSmall.value())){ 
+	} else if (nodeBig.value().equals(nodeSmall.value())){
 	    return treeMatch(nodeBig.getLeft(), nodeSmall) || treeMatch(nodeBig.getRight(), nodeSmall);
 	} else {
 	    return false;
 	}
-	
+
     }
 
     public boolean treeMatch(Node nodeBig, Node nodeSmall) {
@@ -102,7 +102,7 @@ public class Practice {
 		ArrayList<Integer> result = getItem(DPMatrix, Weight);
 		return result;
     }
-    
+
     private void generateMatrix(int[][] matrix, int[] W, int[] P) {
 		for (int i = 0; i < 9; ++i) {
 		    matrix[0][i] = 0;
@@ -149,30 +149,30 @@ public class Practice {
 	    // If n is 0 then there is 1 solution (do not include any coin)
 	    if (n == 0)
 		return 1;
-     
+
 	    // If n is less than 0 then no solution exists
 	    if (n < 0)
 		return 0;
- 
+
 	    // If there are no coins and n is greater than 0, then no solution exist
 	    if (m <=0 && n >= 1)
 		return 0;
- 
+
 	    // count is sum of solutions (i) excluding S[m-1] (ii) including S[m-1]
 	    return count( S, m - 1, n ) + count( S, m, n-S[m-1] );
      }
-    
+
     /*----------------------------------6. evaluate string------------------------------------------*/
     /*----------------String could be (3+1)+(1+0)*2-------------------------------------------------*/
     /*----------------Doesn't work for 2 or more digit number---------------------------------------*/
     public char toChar(int val) {
     	return (char) (val + '0');
     }
-    
+
     public int toInt(char val) {
     	return (int) (val - '0');
     }
-    
+
     public int evaluateExpression(char[] src) {
     	Stack<Character> numStack = new Stack<Character>();
     	for (int i = 0; i < src.length; ++i) {
@@ -187,7 +187,7 @@ public class Practice {
     	}
     	return getStackValue(numStack);
     }
-    
+
     public int getStackValue(Stack<Character> st) {
     	Stack<Integer> fst = new Stack<Integer>();
     	int prevRand = 0;
@@ -213,7 +213,7 @@ public class Practice {
     	}
     	return sum;
     }
-    
+
     /*---------------------------------7. Big Number Multiplication----------------------------*/
     public char[] BigIntMultiply(char[] num1, char[] num2) {
     	if (num1.length < num2.length) {
@@ -235,7 +235,7 @@ public class Practice {
     	}
     	return result;
     }
-    
+
     public String getMultiplySingleDigit(char[] num1, char mulChar) {
     	String result = new String();
     	int mul = toInt(mulChar);
@@ -254,7 +254,7 @@ public class Practice {
     	}
     	return result;
     }
-    
+
     public char[] BigIntAdd(char[] num1, char[] num2) {
     	if (num1.length < num2.length) {
     		return BigIntAdd(num2, num1);
@@ -285,7 +285,7 @@ public class Practice {
     	}
     	return result.toCharArray();
     }
-    
+
     /*---------------------------------7.1 String multiplication--------------------------*/
     public char[] reverseCharArr(char[] charArr) {
     	int i = 0;
@@ -297,19 +297,19 @@ public class Practice {
     	}
     	return charArr;
     }
-    
+
     public char[] StringMultiply(char[] num1, char[] num2) {
     	if (num1.length < num2.length) {
     		return StringMultiply(num2, num1);
     	}
     	num1 = reverseCharArr(num1);
     	num2 = reverseCharArr(num2);
-    	
+
     	char[] result = new char[num1.length + num2.length + 1];
     	for (int k = 0; k < result.length; ++k) {
     		result[k] = '0';
     	}
-    	
+
     	for (int i = 0; i < num2.length; ++i) {
     		if (num2[i] == '0') {
     			continue;
@@ -340,10 +340,10 @@ public class Practice {
     	}
     	return reverseCharArr(finalResult);
     }
-    
+
     /*---------------------------------8. get Sentence----------------------------*/
     /* getSentence("iamastudentfromwaterloo", {"from, "waterloo", "hi", "am", "yes", "i", "a", "student"}) */
-    /*-> "i am a student from waterloo"*/    
+    /*-> "i am a student from waterloo"*/
     public boolean getSentence(String text, Set<String> dictionary, StringBuilder sbuilder) {
     	if (text.length() == 0) {
     		System.out.println(sbuilder.toString());
@@ -359,7 +359,7 @@ public class Practice {
     	}
     	return false;
     }
-    
+
     /*-------------------------------9. magic index, found A[i] = i in sorted array---------------------------*/
     public int foundMagicIndex(int[] arr, int start, int end) {
     	if (start < 0 || start > end || end >= arr.length)
@@ -375,7 +375,7 @@ public class Practice {
     	int rightInd = Math.max(arr[mid], mid + 1);
     	return foundMagicIndex(arr, rightInd, end);
     }
-    
+
     /*------------------------------10. find element in rotated sorted array-----------------------------------*/
     public int foundElemInRotated(int[] arr, int left, int right, int elem) {
     	if (left < right) {
@@ -408,19 +408,19 @@ public class Practice {
     		return result;
     	}
     }
-    
+
     /*-----------------------------11. string to integer----------------------------------
-     * 1. The function first discards as many whitespace characters as necessary until the first 
-     * non-whitespace character is found. Then, starting from this character, takes an optional 
-     * initial plus or minus sign followed by as many numerical digits as possible, and interprets 
+     * 1. The function first discards as many whitespace characters as necessary until the first
+     * non-whitespace character is found. Then, starting from this character, takes an optional
+     * initial plus or minus sign followed by as many numerical digits as possible, and interprets
      * them as a numerical value.
-     * 2. The string can contain additional characters after those that form the integral number, 
+     * 2. The string can contain additional characters after those that form the integral number,
      * which are ignored and have no effect on the behavior of this function.
-     * 3. If the first sequence of non-whitespace characters in str is not a valid integral number, 
-     * or if no such sequence exists because either str is empty or it contains only whitespace 
+     * 3. If the first sequence of non-whitespace characters in str is not a valid integral number,
+     * or if no such sequence exists because either str is empty or it contains only whitespace
      * characters, no conversion is performed.
-     * 4. If no valid conversion could be performed, a zero value is returned. If the correct value 
-     * is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is 
+     * 4. If no valid conversion could be performed, a zero value is returned. If the correct value
+     * is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is
      * returned.*/
     public int stringToInt(String input) {
     	input = input.trim();
@@ -451,7 +451,7 @@ public class Practice {
     	}
     	return (int) result;
     }
-    
+
     /*-------------------------------12. validate string is numeric using finite automata-------------------------------*/
     public enum INPUT {
     	SPACE(0), DIGIT(1), SIGN(2), E(3), DOT(4), OTHERS(5);
@@ -462,42 +462,42 @@ public class Practice {
     	public int getVal() {
     		return value;
     	}
-    } 
+    }
     public boolean validateNumeric(String input) {
     	input = input.trim();
     	ArrayList<ArrayList<Integer>> status = new ArrayList<ArrayList<Integer>>();
     	for (int i = 0; i < 6; ++i) {
     		status.add(new ArrayList<Integer>(Arrays.asList(-1, -1, -1, -1 , -1, -1)));
     	}
-    	
+
     	status.get(0).set(INPUT.SPACE.getVal(), 0);
     	status.get(0).set(INPUT.DIGIT.getVal(), 1);
     	status.get(0).set(INPUT.DOT.getVal(), 1);
     	status.get(0).set(INPUT.OTHERS.getVal(), -1);
     	status.get(0).set(INPUT.SIGN.getVal(), 1);
     	status.get(0).set(INPUT.E.getVal(), 2);
-    	
+
     	status.get(1).set(INPUT.SPACE.getVal(), 3);
     	status.get(1).set(INPUT.DIGIT.getVal(), 1);
     	status.get(1).set(INPUT.DOT.getVal(), 2);
     	status.get(1).set(INPUT.OTHERS.getVal(), -1);
     	status.get(1).set(INPUT.SIGN.getVal(), -1);
     	status.get(1).set(INPUT.E.getVal(), 2);
-    	
+
     	status.get(2).set(INPUT.SPACE.getVal(), 3);
     	status.get(2).set(INPUT.DIGIT.getVal(), 2);
     	status.get(2).set(INPUT.DOT.getVal(), -1);
     	status.get(2).set(INPUT.E.getVal(), -1);
     	status.get(2).set(INPUT.OTHERS.getVal(), -1);
     	status.get(2).set(INPUT.SIGN.getVal(), -1);
-    	
+
     	status.get(3).set(INPUT.SPACE.getVal(), 3);
     	status.get(3).set(INPUT.DIGIT.getVal(), -1);
     	status.get(3).set(INPUT.DOT.getVal(), -1);
     	status.get(3).set(INPUT.E.getVal(), -1);
     	status.get(3).set(INPUT.OTHERS.getVal(), -1);
     	status.get(3).set(INPUT.SIGN.getVal(), -1);
-    	
+
     	int stage = 0;
     	for (char ch : input.toCharArray()) {
     		INPUT cur = checkInput(ch);
@@ -517,7 +517,7 @@ public class Practice {
     	if (ch == '.') return INPUT.DOT;
     	return INPUT.OTHERS;
     }
-    
+
     /*--------------------------13. Merge Sorted Array, assume one array have enough space------------------------*/
     public int[] mergeSortedArray(int a[], int b[]) {
     	int i = a.length - 1 - b.length, j = b.length - 1, k = a.length - 1;
@@ -537,7 +537,7 @@ public class Practice {
     	}
     	return a;
     }
-    
+
     /*-------------------------14. Plus one for int array------------------------------*/
     public ArrayList<Integer> plusOneForArray(ArrayList<Integer> origin) {
     	if (origin == null || origin.size() == 0) {
@@ -554,10 +554,10 @@ public class Practice {
     	}
     	return origin;
     }
-    
+
     /*-------------------------15. Remove Duplicates of sorted array in place----------------------------*/
     public int[] removeDuplicate(int in[]) {
-    	if (in.length == 0) 
+    	if (in.length == 0)
     		return null;
     	int runner = 1;
     	int lastElm = 0;
@@ -572,7 +572,7 @@ public class Practice {
     	}
     	return Arrays.copyOf(in, lastElm + 1);
     }
-    
+
     /*-------------------------16. Remove all values equal to given value-----------------------*/
     public int removeSpecValue(int in[], int val) {
     	if (in.length == 0) {
@@ -591,7 +591,7 @@ public class Practice {
     	}
     	return lastInd;
     }
-    
+
     /*17. Given a sorted array of integers, find the starting and ending position of a given target value.
      * For example,
 	 * Given [5, 7, 7, 8, 8, 10] and target value 8,
@@ -601,12 +601,12 @@ public class Practice {
     	public int elm1;
     	public int elm2;
     }
-    
+
     public Pair getRangeForSpec(int in[], int val) {
     	Pair p = new Pair();
     	p.elm1 = -1;
     	p.elm2 = -1;
-    	
+
     	int low = 0;
     	int high = in.length - 1;
     	while (low < high) {
@@ -620,10 +620,10 @@ public class Practice {
     	if (in[low] != val) {
     		return p;
     	}
-    	
+
     	high = in.length;
     	p.elm1 = low;
-    	
+
     	while(low < high) {
     		int mid = (high + low) / 2;
     		if (in[mid] > val) {

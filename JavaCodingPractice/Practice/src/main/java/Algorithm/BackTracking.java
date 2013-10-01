@@ -1,6 +1,10 @@
 package Algorithm;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 public class BackTracking {
@@ -122,5 +126,51 @@ public class BackTracking {
 			}
 		}
 		return false;
+	}
+
+	/*-------------------4. Word Ladder-----------------*/
+	/* Length are same.
+	 * Only one letter can be changed at a time
+     * Each intermediate word must exist in the dictionary*/
+	public LinkedList<String> findLadder(String startWord, String stopWord, Set<String> dict) {
+		Set<String> visitedSet = new HashSet<String>();
+		Map<String, String> backTrackMap = new HashMap<String, String>();
+		Queue<String> q = new LinkedList<String>();
+		q.add(startWord);
+
+		while (q.size() > 0) {
+			String wd = q.poll();
+			for (String v : getOneEditWords(wd)) {
+				if (v.equals(stopWord)) {
+					LinkedList<String> resultList = new LinkedList<String>();
+					resultList.add(v);
+					while(wd != null) {
+						resultList.add(0, wd);
+						wd = backTrackMap.get(wd);
+					}
+					return resultList;
+				}
+				if (dict.contains(v) && !visitedSet.contains(v)) {
+					q.add(v);
+					visitedSet.add(v);
+					backTrackMap.put(v, wd);
+				}
+			}
+		}
+		return null;
+	}
+
+	public Set<String> getOneEditWords(String w) {
+		Set<String> words = new HashSet<String>();
+		for (int i = 0; i < w.length(); ++i) {
+			char[] wArray = w.toCharArray();
+			for (char c = 'a'; c <= 'z'; ++c) {
+				if (c != w.charAt(i)) {
+					wArray[i] = c;
+					words.add(new String(wArray));
+				}
+			}
+		}
+		return words;
 	}
 }

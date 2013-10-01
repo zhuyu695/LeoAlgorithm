@@ -12,9 +12,9 @@ import junit.framework.TestSuite;
 
 import org.junit.Test;
 
+import Algorithm.BackTracking;
 import Algorithm.BitManipulation;
 import Algorithm.LinkedListAlg;
-import Algorithm.BitManipulation.Pair;
 import Algorithm.LinkedListAlg.Node;
 import Algorithm.Practice;
 import Algorithm.RecursiveAlg;
@@ -29,25 +29,26 @@ public class GeneralPractice extends TestSuite {
 	RecursiveAlg recur = new RecursiveAlg();
 	SortingAlg sort = new SortingAlg();
 	TreeAlg tree = new TreeAlg();
-	
+	BackTracking btrack = new BackTracking();
+
 	@Test
 	public void testRevertBit() {
 		assertEquals(10, bitm.reverseBit(5, 4));
 	}
-	
+
 	@Test
 	public void testEvaluateExpression() {
 		String src = "(3+1)+(1+0)*2";
 		assertEquals(6, prac.evaluateExpression(src.toCharArray()));
 	}
-	
+
 	@Test
 	public void testBigIntMul() {
 		String num1 = "666";
 		String num2 = "35";
 		assertEquals("23310", new String(prac.BigIntMultiply(num1.toCharArray(), num2.toCharArray())));
 	}
-	
+
 	@Test
 	public void testReverseList() {
 		Node n5 = list.new Node(66);
@@ -56,16 +57,16 @@ public class GeneralPractice extends TestSuite {
 		Node n2 = list.new Node(6, n3);
 		Node n1 = list.new Node(5, n2);
 		Node root = list.new Node(10, n1);
-		
+
 		Node newHead = list.reverseListNonRecur(root);
 		assertEquals(66, newHead.value);
 		assertEquals(9, newHead.next.value);
-		
+
 		newHead = list.reverseListRecur(newHead);
 		assertEquals(10, newHead.value);
 		assertEquals(5, newHead.next.value);
 	}
-	
+
 	@Test
 	//Print out on console
 	public void testTuple() {
@@ -73,7 +74,7 @@ public class GeneralPractice extends TestSuite {
 		StringBuilder sbuilder = new StringBuilder();
 		recur.populateSequence(src, 0, sbuilder);
 	}
-	
+
 	@Test
 	public void testGetSentence() {
 		Set<String> dic = new HashSet<String>();
@@ -89,14 +90,14 @@ public class GeneralPractice extends TestSuite {
     	prac.getSentence("iamastudentfromwaterloo", dic,sbuilder);
     	assertEquals("i am a student from waterloo", sbuilder.substring(1));
 	}
-	
+
 	@Test
 	public void testQuickSorting() {
 		int src[] = {9, 2, 6, 1, 3, 5};
 		sort.QuickSort(src, 0, src.length - 1);
 		System.out.println(src);
 	}
-	
+
 	@Test
 	public void testStringToInt() {
 		String strIn = "56987615";
@@ -106,7 +107,7 @@ public class GeneralPractice extends TestSuite {
 		String strIn2 = "  9876esc ";
 		assertEquals(9876, prac.stringToInt(strIn2));
 	}
-	
+
 	@Test
 	public void testValidNum() {
 		String in = " -879.125";
@@ -124,7 +125,7 @@ public class GeneralPractice extends TestSuite {
 		String in6 = "e5125";
 		assertTrue(prac.validateNumeric(in6));
 	}
-	
+
 	@Test
 	public void testArrayToBST() {
 		int inArr[] = {1, 2, 3, 5, 6, 9, 20, 55, 100};
@@ -132,20 +133,20 @@ public class GeneralPractice extends TestSuite {
 		assertEquals(6, node.value);
 		assertEquals(2, node.left.value);
 	}
-	
+
 	@Test
 	public void testReverseCharArr() {
 		char chArr[] = {'a', 'b', 'c', 'd', 'e'};
 		assertEquals("edcba", new String(prac.reverseCharArr(chArr)));
 	}
-	
+
 	@Test
 	public void testStringMul() {
 		String num1 = "987";
 		String num2 = "6585";
 		assertEquals("6499395", new String(prac.StringMultiply(num1.toCharArray(), num2.toCharArray())));
 	}
-	
+
 	@Test
 	public void testPlusOne() {
 		ArrayList<Integer> testArr = new ArrayList<Integer>();
@@ -157,25 +158,37 @@ public class GeneralPractice extends TestSuite {
 		assertEquals(9, result.get(1).intValue());
 		assertEquals(0, result.get(2).intValue());
 	}
-	
+
 	@Test
 	public void testRemoveDup() {
 		int a[] = {1, 2, 3, 3, 3, 4, 5, 5, 6};
 		int b[] = prac.removeDuplicate(a);
 		assertTrue("testRemoveDup failed: ", 6 == b[5]);
 	}
-	
+
 	@Test
 	public void testRemoveSpecVal() {
 		int a[] = {1, 2, 3, 3, 3, 4, 5, 5, 6};
 		assertEquals(6, prac.removeSpecValue(a, 3));
 	}
-	
+
 	@Test
 	public void testRange() {
 		int a[] = {1, 2, 3, 3, 3, 4, 5, 5, 6, 6};
 		Practice.Pair p = prac.getRangeForSpec(a, 6);
 		assertEquals(8, p.elm1);
 		assertEquals(9, p.elm2);
+	}
+
+	@Test
+	public void testPrintParenthesis() {
+		btrack.printParenthesis(3);
+	}
+
+	@Test
+	public void testPermuteNum() {
+		int a[] = {1, 2, 3, 4, 5, 6, 6, 5};
+		int dupNum = 2;
+		btrack.getPermutationNum(a, a.length - dupNum, 0, new StringBuilder());
 	}
 }

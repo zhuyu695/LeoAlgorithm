@@ -1,11 +1,6 @@
 package Algorithm;
 
 public class BitManipulation {
-	public class Pair {
-		public int firstElem;
-		public int secondElem;
-	}
-	
 	public int swapBit(int num, int src, int dest) {
 		int srcBit = (num >> src) & 1;
 		int destBit = (num >> dest) & 1;
@@ -14,7 +9,7 @@ public class BitManipulation {
 		}
 		return num;
 	}
-	
+
 	/*-----------------reverse bits of an integer-----------------------*/
 	public int reverseBit(int elem, int numberOfBits) {
 		int result = elem;
