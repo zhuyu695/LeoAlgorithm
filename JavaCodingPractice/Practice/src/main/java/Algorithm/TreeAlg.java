@@ -1,6 +1,7 @@
 package Algorithm;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class TreeAlg {
 	public class BinaryTreeNode {
@@ -95,5 +96,45 @@ public class TreeAlg {
         	}
         }
         return res;
+	}
+
+	/*-----------5. Check Balanced Binary Tree------------*/
+	public boolean checkBalancedBST(BinaryTreeNode root) {
+		if (checkHeight(root) != -1)
+			return true;
+		return false;
+	}
+
+	public int checkHeight(BinaryTreeNode root) {
+		if (root == null) return 0;
+		int left = checkHeight(root.left);
+		int right = checkHeight(root.right);
+		if (left == -1 || right == -1) {
+			return -1;
+		}
+		if (Math.abs(left - right) > 1)
+			return -1;
+		return left > right ? left + 1 : right + 1;
+	}
+
+	/*----------6. Inorder Traversal--------------*/
+	public ArrayList<BinaryTreeNode> inorderTraversal(BinaryTreeNode root) {
+		ArrayList<BinaryTreeNode> list = new ArrayList<BinaryTreeNode>();
+		Stack<BinaryTreeNode> st = new Stack<BinaryTreeNode>();
+		BinaryTreeNode cur = root;
+		boolean done = false;
+		while (!done) {
+			if (cur != null) {
+				st.add(cur);
+				cur = cur.left;
+			} else if (st.size() == 0) {
+				done = true;
+			} else {
+				BinaryTreeNode tmp = st.pop();
+				list.add(tmp);
+				cur = tmp.right;
+			}
+		}
+		return list;
 	}
 }
