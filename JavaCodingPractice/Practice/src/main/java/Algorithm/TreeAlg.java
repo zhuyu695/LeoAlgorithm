@@ -1,6 +1,8 @@
 package Algorithm;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 public class TreeAlg {
@@ -137,4 +139,86 @@ public class TreeAlg {
 		}
 		return list;
 	}
+
+	/*-----------7. Traverse level by level------------*/
+	public ArrayList<LinkedList<BinaryTreeNode>> traverseByLevel(BinaryTreeNode root) {
+		LinkedList<BinaryTreeNode> cur = new LinkedList<BinaryTreeNode>();
+		ArrayList<LinkedList<BinaryTreeNode>> result = new ArrayList<LinkedList<BinaryTreeNode>>();
+		if (root != null)
+			cur.add(root);
+		while (cur.size() > 0) {
+			result.add(cur);
+			LinkedList<BinaryTreeNode> parent = cur;
+			cur = new LinkedList<BinaryTreeNode>();
+			for (BinaryTreeNode btn : parent) {
+				if (btn.left != null) {
+					cur.add(btn.left);
+				}
+				if (btn.right != null) {
+					cur.add(btn.right);
+				}
+			}
+		}
+		return result;
+	}
+
+	/*-------------8. find max sum path in binary tree------------*/
+	int maxVal = Integer.MIN_VALUE;
+
+	public int findMaxSumPath(BinaryTreeNode root) {
+		if (root == null)
+			return Integer.MIN_VALUE;
+		int left = findMaxSumPath(root.left);
+		int right = findMaxSumPath(root.right);
+		int cur = root.value;
+		int curMax = Math.max(cur, Math.max(cur + left, cur + right));
+		maxVal = Math.max(maxVal, Math.max(curMax, cur + left + right));
+		return curMax;
+	}
+
+	/*------------9. check symmetric tree------------*/
+    public boolean isSymmetric(BinaryTreeNode root) {
+        if(root==null) return true;
+        return isSymmetric(root.left,root.right);
+    }
+
+    public boolean isSymmetric(BinaryTreeNode a, BinaryTreeNode b){
+        if(a == null) return b == null;
+        if(b == null) return false;
+
+        if(a.value != b.value) return false;
+
+        if(!isSymmetric(a.left, b.right)) return false;
+        if(!isSymmetric(a.right, b.left)) return false;
+
+        return true;
+    }
+
+    /*--------------10. check completed binary tree--------------*/
+    public boolean isCompleteBT(BinaryTreeNode root) {
+    	if (root == null)
+    		return true;
+    	Queue<BinaryTreeNode> queue = new LinkedList<BinaryTreeNode>();
+    	boolean flag = false;
+    	queue.add(root);
+    	while (queue.size() > 0) {
+    		BinaryTreeNode cur = queue.poll();
+    		if (cur.left != null) {
+    			if (flag)
+    				return false;
+    			queue.add(cur.left);
+    		} else {
+    			flag = true;
+    		}
+    		if (cur.right != null) {
+    			if (flag = true)
+    				return false;
+    			queue.add(cur.right);
+    		}
+    		else {
+    			flag = true;
+    		}
+    	}
+    	return true;
+    }
 }
