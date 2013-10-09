@@ -1,6 +1,8 @@
 package Algorithm;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -520,7 +522,7 @@ public class Practice {
 
     /*--------------------------13. Merge Sorted Array, assume one array have enough space------------------------*/
     public int[] mergeSortedArray(int a[], int b[]) {
-    	int i = a.length - 1 - b.length, j = b.length - 1, k = a.length - 1;
+    	int k = a.length - 1 - b.length, j = b.length - 1, i = a.length - 1;
     	while (i >= 0 && j >= 0) {
     		if (a[i] < b[j]) {
     			a[k] = b[j];
@@ -634,5 +636,48 @@ public class Practice {
     	}
     	p.elm2 = high - 1;
     	return p;
+    }
+
+    /*----------------18. Permutation of phone numbers-----------------*/
+    /*Given a digit string, return all possible letter combinations that the number could represent.*/
+    public void printNumberStringPermutation() {
+    	Map<Character, String> nMap = new HashMap<Character, String>();
+    	nMap.put('2', "abc");
+    	nMap.put('3', "def");
+    	nMap.put('4', "ghi");
+    	nMap.put('5', "jkl");
+    	nMap.put('6', "mno");
+    	numberStringPermuteHelper(nMap, 0, 5, new StringBuilder());
+    }
+
+    public void numberStringPermuteHelper(Map<Character, String> nMap, int startNum, int totalLen, StringBuilder sbuilder) {
+    	if (startNum == totalLen) {
+    		System.out.println(sbuilder.toString());
+    		return;
+    	}
+    	String str = nMap.get(startNum + 2 + '0');
+    	for(int i = 0; i < 3; ++i) {
+    		sbuilder.append(str.charAt(i));
+    		numberStringPermuteHelper(nMap, startNum + 1, totalLen, sbuilder);
+    		sbuilder.setLength(sbuilder.length() - 1);
+    	}
+    }
+
+    /*----------19. reverse integer-----------*/
+    public int reverseInt(int a) {
+    	boolean neg = false;
+    	if (a < 0) {
+    		a = 0 - a;
+    		neg = true;
+    	}
+    	int b = 0;
+    	while(a > 0) {
+    		b *= 10;
+    		b += a % 10;
+    		a = a / 10;
+    	}
+    	if (neg)
+    		return 0 - b;
+    	return b;
     }
 }

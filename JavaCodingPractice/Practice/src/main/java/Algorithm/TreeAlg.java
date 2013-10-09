@@ -10,6 +10,11 @@ public class TreeAlg {
 		public int value;
 		public BinaryTreeNode left;
 		public BinaryTreeNode right;
+		public BinaryTreeNode(int val) {
+			value = val;
+		}
+		public BinaryTreeNode() {
+		}
 	}
 
 	/*------------------------1. check if it is binary search tree------------------------*/
@@ -19,6 +24,7 @@ public class TreeAlg {
 			return true;
 		}
 		if (!checkBST(root.left)) return false;
+		if (root.value < lastVisit) return false;
 		lastVisit = root.value;
 		if(!checkBST(root.right)) return false;
 		return true;
@@ -52,8 +58,8 @@ public class TreeAlg {
 	/*--------------3. Two elements of a binary search tree (BST) are swapped by mistake.-----*/
     /*------------------Recover the tree without changing its structure.----------------------*/
 	public void recoverBinaryTree(BinaryTreeNode root) {
-		BinaryTreeNode node1 = inorderCheck(root);
-		BinaryTreeNode node2 = inorderCheck(node1);
+		BinaryTreeNode node1 = inorderCheck(root, null);
+		BinaryTreeNode node2 = inorderCheck(root, node1);
 		if (node1 != null && node2 != null) {
 			int val = node1.value;
 			node1.value = node2.value;
@@ -63,17 +69,17 @@ public class TreeAlg {
 
 	int lastVisited = 0;
 
-	public BinaryTreeNode inorderCheck(BinaryTreeNode node) {
+	public BinaryTreeNode inorderCheck(BinaryTreeNode node, BinaryTreeNode foundNode) {
 		if (node == null)
 			return null;
-		BinaryTreeNode result = inorderCheck(node.left);
+		BinaryTreeNode result = inorderCheck(node.left, foundNode);
 		if (result != null)
 			return result;
-		if (node.value < lastVisited)
+		if (node.value < lastVisited && !node.equals(foundNode))
 			return node;
 		else
 			lastVisited = node.value;
-		result = inorderCheck(node.right);
+		result = inorderCheck(node.right, foundNode);
 		if (result != null)
 			return result;
 		return null;
@@ -220,5 +226,20 @@ public class TreeAlg {
     		}
     	}
     	return true;
+    }
+
+    /*--------------11. find total sum of all root to leaf numbers----------------*/
+    /*An example is one root-to-leaf path 1->2->3 which represents the number 123.*/
+    public int sum = 0;
+    public void findRootToLeafSum(BinaryTreeNode root, int cur) {
+    	if (root == null)
+    		return;
+    	cur = cur * 10 + root.value;
+    	if (root.left == null && root.right == null) {
+    		sum += cur;
+    		return;
+    	}
+    	findRootToLeafSum(root.left, cur);
+    	findRootToLeafSum(root.right, cur);
     }
 }

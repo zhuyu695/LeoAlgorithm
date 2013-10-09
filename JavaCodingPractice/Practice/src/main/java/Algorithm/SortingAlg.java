@@ -10,7 +10,7 @@ public class SortingAlg {
 			Merge(arr, start, mid, end);
 		}
 	}
-	
+
 	public void Merge(int[] arr, int left, int mid, int right) {
 		int[] helper = new int[arr.length];
 		for (int i = left; i <= right; ++i) {
@@ -32,7 +32,7 @@ public class SortingAlg {
 			arr[k + ii] = helper[i + ii];
 		}
 	}
-	
+
 	/*-----------------------------Quick Sort------------------------------*/
 	public void QuickSort(int[] arr, int left, int right) {
 		if (left < right) {
@@ -43,7 +43,7 @@ public class SortingAlg {
 				QuickSort(arr, pivot, right);
 		}
 	}
-	
+
 	public int Partition(int [] arr, int left, int right) {
 		int pivot = arr[(left + right) >> 1];
 		int i = left;
@@ -64,5 +64,17 @@ public class SortingAlg {
 			}
 		}
 		return i;
+	}
+
+	/*---------------------insertion sort---------------------*/
+	public void insertionSort(int[] a) {
+		for (int i = 1; i < a.length; ++i) {
+			int temp = a[i];
+			int j;
+			for (j = i - 1; j >= 0 && a[j] > temp; --j) {
+				a[j + 1] = a[j];
+			}
+			a[j + 1] = temp;
+		}
 	}
 }

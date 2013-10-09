@@ -191,4 +191,25 @@ public class GeneralPractice extends TestSuite {
 		int dupNum = 2;
 		btrack.getPermutationNum(a, a.length - dupNum, 0, new StringBuilder());
 	}
+
+	@Test
+	public void testTreeRootToLeafSum() {
+		BinaryTreeNode root = tree. new BinaryTreeNode(8);
+		BinaryTreeNode left = tree. new BinaryTreeNode(6);
+		BinaryTreeNode right = tree. new BinaryTreeNode(5);
+		BinaryTreeNode leftleft = tree. new BinaryTreeNode(6);
+		left.left = leftleft;
+		root.left = left;
+		root.right = right;
+		tree.findRootToLeafSum(root, 0);
+		assertEquals(951, tree.sum);
+	}
+
+	@Test
+	public void testReverseInt() {
+		int a = 189;
+		assertEquals(981, prac.reverseInt(a));
+		int b = -186;
+		assertEquals(-681, prac.reverseInt(b));
+	}
 }
