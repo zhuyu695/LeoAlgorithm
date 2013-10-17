@@ -522,7 +522,7 @@ public class Practice {
 
     /*--------------------------13. Merge Sorted Array, assume one array have enough space------------------------*/
     public int[] mergeSortedArray(int a[], int b[]) {
-    	int k = a.length - 1 - b.length, j = b.length - 1, i = a.length - 1;
+    	int k = a.length - 1 + b.length, j = b.length - 1, i = a.length - 1;
     	while (i >= 0 && j >= 0) {
     		if (a[i] < b[j]) {
     			a[k] = b[j];
@@ -662,6 +662,33 @@ public class Practice {
     		sbuilder.setLength(sbuilder.length() - 1);
     	}
     }
+    /*--------------18.1 same--------------*/
+    static final int PHONE_NUMBER_LENGTH = 7;
+
+    void printTelephoneWords( int[] phoneNum ){
+        char[] result = new char[ PHONE_NUMBER_LENGTH ];
+
+        doPrintTelephoneWords( phoneNum, 0, result );
+    }
+
+    void doPrintTelephoneWords( int[] phoneNum, int curDigit,
+                                char[] result ){
+        if( curDigit == PHONE_NUMBER_LENGTH ){
+       	  System.out.println( new String( result ) );
+    	  return;
+        }
+
+        for( int i = 1; i <= 3; i++ ){
+            result[ curDigit ] = getCharKey( phoneNum[curDigit], i );
+            doPrintTelephoneWords( phoneNum, curDigit + 1, result );
+            if( phoneNum[curDigit] == 0 ||
+                phoneNum[curDigit] == 1) return;
+        }
+    }
+
+    char getCharKey(int digit, int ind) {
+    	return 'z';
+    }
 
     /*----------19. reverse integer-----------*/
     public int reverseInt(int a) {
@@ -679,5 +706,41 @@ public class Practice {
     	if (neg)
     		return 0 - b;
     	return b;
+    }
+
+    /*20. Given an array S of n integers, are there elements a, b, c in S such that a + b + c = 0?*/
+    /* Find all unique triplets in the array which gives the sum of zero.-----------*/
+    public ArrayList<ArrayList<Integer>> getTriplets(int a[]) {
+    	ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+    	Arrays.sort(a);
+    	for (int i = 0; i < a.length - 2; ++i) {
+    		if (a[i] > 0)
+    			break;
+    		if (a[i] == a[i + 1])
+    			continue;
+    		for (int j = i + 1; j < a.length - 1; ++j) {
+    			if (a[j] == a[j + 1])
+    				continue;
+    			if (a[i] + a[j] > 0)
+    				break;
+    			for (int k = j + 1; k < a.length; ++k) {
+    				if (a[k] == a[k + 1])
+    					continue;
+    				int sum = a[k] + a[j] + a[i];
+    				if (sum == 0) {
+    					ArrayList<Integer> tmp = new ArrayList<Integer>();
+    					tmp.add(a[i]);
+    					tmp.add(a[j]);
+    					tmp.add(a[k]);
+    					result.add(tmp);
+    				} else if (sum > 0) {
+    					break;
+    				} else {
+    					continue;
+    				}
+    			}
+    		}
+    	}
+    	return result;
     }
 }

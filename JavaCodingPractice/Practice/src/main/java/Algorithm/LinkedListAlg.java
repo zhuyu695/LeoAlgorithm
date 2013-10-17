@@ -99,4 +99,76 @@ public class LinkedListAlg {
 		}
 		return cur;
 	}
+
+	/*------------remove duplicate in sorted list------------*/
+	public Node removeDup(Node head) {
+		if (head == null || head.next == null) {
+			return head;
+		}
+		Node cur = head;
+		while (cur.next != null) {
+			if (cur.value == cur.next.value)
+				cur.next = cur.next.next;
+			else
+				cur = cur.next;
+		}
+		return head;
+	}
+
+	/*-----------reverse nodes in K group-------------*/
+	/*For example,
+	  Given this linked list: 1->2->3->4->5
+
+	  For k = 2, you should return: 2->1->4->3->5
+
+	  For k = 3, you should return: 3->2->1->4->5*/
+	public Node reverseKGroup(Node head, int k) {
+		Node prev;
+		Node scan;
+		Node tmp;
+		Node guard = new Node();
+		guard.next = head;
+		head = guard;
+		prev = head;
+		scan = prev;
+		int step = 0;
+
+		while (scan != null) {
+			step = k;
+			while (scan != null && --step >= 0) {
+				scan = scan.next;
+			}
+			if (scan == null) {
+				break;
+			}
+			step = k - 1;
+			scan = prev.next;
+			while (--step >= 0 && scan.next != null) {
+				tmp = scan.next;
+				scan.next = scan.next.next;
+				tmp.next = prev.next;
+				prev.next = tmp;
+			}
+			prev = scan;
+		}
+		return head.next;
+	}
+
+	/*-----------Swap nodes in pairs--------------*/
+	/*Given 1->2->3->4, you should return the list as 2->1->4->3.*/
+	public Node swapInPair(Node head) {
+		Node dummy = new Node();
+		dummy.next = head;
+		Node prev = dummy;
+		Node tmp = head;
+		while (prev.next != null && prev.next.next != null) {
+			tmp = prev.next;
+			prev.next = tmp.next;
+			tmp.next = prev.next.next;
+			prev.next.next = tmp;
+
+			prev = tmp;
+		}
+		return dummy.next;
+	}
 }
