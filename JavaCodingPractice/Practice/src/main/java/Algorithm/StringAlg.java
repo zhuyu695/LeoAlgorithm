@@ -1,5 +1,7 @@
 package Algorithm;
 
+import java.util.Arrays;
+
 public class StringAlg {
 	/*1. Implement wildcard pattern matching with support for ‘?’ and ‘*’.
 	  ‘?’ Matches any single character.
@@ -133,4 +135,77 @@ public class StringAlg {
 		board[y][x] = s[start];
 		return false;
 	}
+
+	/*4.Given a string S and a string T, find the minimum window in S which will contain
+	 * all the characters in T in complexity O(n).*/
+	public String minWindow(char[] s, char[] t) {
+		int need_to_find[] = new int[256];
+		int has_found[] = new int[256];
+
+		for (char c : t) {
+			++need_to_find[c];
+		}
+
+		int begin = 0, end = 0;
+		int count = 0;
+		int min_len = Integer.MAX_VALUE;
+		int min_begin = 0;
+
+		for (; end < s.length; ++ end) {
+			char curCh = s[end];
+			if (need_to_find[curCh] == 0)
+				continue;
+			++has_found[curCh];
+
+			if (has_found[curCh] <= need_to_find[curCh])
+				++count;
+
+			char begCh = s[begin];
+			if (count == t.length) {
+				while (need_to_find[begCh] == 0 || has_found[begCh] > need_to_find[begCh]) {
+					if (has_found[begCh] > need_to_find[begCh]) {
+						--has_found[begCh];
+					}
+					++begin;
+					begCh = s[begin];
+				}
+				if (min_len > end - begin + 1) {
+					min_len = end - begin + 1;
+					min_begin = begin;
+				}
+			}
+		}
+		if (count < t.length)
+			return null;
+		else
+			return s.toString().substring(min_begin, min_begin + min_len);
+	}
+
+	/*5. Given a string containing just the characters ‘(‘ and ‘)’,
+	 * find the length of the longest valid (well-formed) parentheses substring.
+	 * example is “)()())”, where the longest valid parentheses substring is “()()”, which has length = 4*/
+	/*answer: http://blog.csdn.net/abcbc/article/details/8826782*/
+	public int validLongestParathesis(char[] s) {
+		if (s == null || s.length < 2)
+			return 0;
+
+		int dp[] = new int[s.length];
+		Arrays.fill(dp, 0);
+		int max = 0;
+
+		for (int i = s.length - 2; i >= 0; --i) {
+			if (s[i] == '(') {
+				//dp[i] is storing longest matching starts from i
+				int j = i + dp[i + 1] + 1;
+				if (j < s.length && s[j] == ')') {
+					dp[i] = dp[i + 1] + 2;
+					if (j + 1 < s.length)
+						dp[i] += dp[j + 1];
+				}
+			}
+			max = Math.max(dp[i], max);
+		}
+		return max;
+	}
+
 }
