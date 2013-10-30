@@ -121,8 +121,6 @@ public class SortingAlg {
 
 	public ArrayList<Interval> merge(ArrayList<Interval> intervals) {
 		Collections.sort(intervals, IntervalComparator);
-		int st = intervals.get(0).start;
-		int ed = intervals.get(0).end;
 		ArrayList<Interval> result = new ArrayList<Interval>();
 		for (int i = 1; i < intervals.size(); ++i) {
 			if (result.get(result.size() - 1).end >= intervals.get(i).start) {

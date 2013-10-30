@@ -1,5 +1,7 @@
 package Algorithm;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -71,4 +73,147 @@ public class SearchAlg {
 		}
 	}
 
+	/*2.Given an array of non-negative integers, you are initially positioned at the first index of the array.
+	 * Each element in the array represents your maximum jump length at that position.
+	 * Your goal is to reach the last index in the minimum number of jumps.
+	 * For example:
+	 * Given array A = [2,3,1,1,4]
+	 * The minimum number of jumps to reach the last index is 2. (Jump 1 step from index 0 to 1, then 3 steps to the last index.) */
+	public int getJump(int a[]) {
+		int jump = 0;
+		int curMax = 0;
+
+		for (int i = 0; i < a.length; ++i) {
+			if (a[i] > 0)
+				++jump;
+			else
+				return 0;
+			curMax = a[i] + i;
+			if (curMax >= a.length - 1) {
+				return jump;
+			}
+
+			int tmpMax = 0;
+			//greedy alg
+			for (int j = i; j < curMax; ++j) {
+				if (tmpMax < a[j] + j) {
+					tmpMax = a[j] + j;
+					i = j;
+				}
+			}
+		}
+		return jump;
+	}
+
+	/*3.Given an array S of n integers, are there elements a, b, c, and d in S such that a + b + c + d = target?
+	 * Find all unique quadruplets in the array which gives the sum of target.*/
+	public ArrayList<ArrayList<Integer>> fourSum(int a[], int target) {
+		Arrays.sort(a);
+		int i = 0, j = 0, k = 0;
+		int len = a.length;
+		int sum = 0;
+		ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+
+		for (; i < len - 3; ++i) {
+			if (i > 0 && a[i] == a[i - 1])
+				continue;
+			for (; j < len - 2; ++j) {
+				if (j > 0 && a[j] == a[j - 1])
+					continue;
+				for (; k < len - 1; ++k) {
+					if (k > 0 && a[k] == a[k - 1])
+						continue;
+					sum = a[i] + a[j] + a[k];
+
+					int l = k + 1;
+					int r = len - 1;
+					int diff = target - sum;
+					while (l <= r) {
+						int mid = (l + r) >> 1;
+						if (a[mid] == diff) {
+							ArrayList<Integer> tmp = new ArrayList<Integer>();
+							tmp.add(a[i]);
+							tmp.add(a[j]);
+							tmp.add(a[k]);
+							tmp.add(a[mid]);
+							result.add(tmp);
+							break;
+						} else if (a[mid] < diff) {
+							r = mid - 1;
+						} else {
+							l = mid + 1;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	/*4.Given a 2D board and a word, find if the word exists in the grid.
+	 * The word can be constructed from letters of sequentially adjacent cell,
+	 * where “adjacent” cells are those horizontally or vertically neighboring.
+	 * The same letter cell may not be used more than once.*/
+	public boolean wordExist(char[][] board, char[] wd) {
+		int rows = board.length;
+		int cols = board[0].length;
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				if (exist(board, j, i, wd, 0))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean exist(char[][] board, int x, int y, char[] wd, int pos) {
+		if (board[y][x] == wd[pos]) {
+			if (pos == wd.length - 1)
+				return true;
+			board[y][x] = '.';
+			++pos;
+			if (y > 0 && exist(board, x, y - 1, wd, pos))
+					return true;
+			if (y < board.length - 1 && exist(board, x, y + 1, wd, pos))
+					return true;
+			if (x > 0 && exist(board, x - 1, y, wd, pos))
+					return true;
+			if (x < board[0].length - 1 && exist(board, x + 1, y, wd, pos))
+					return true;
+			board[y][x] = wd[pos];
+		}
+		return false;
+	}
+
+	/*5. N Queues Problem*/
+	public void printNQuenesSolution(int[][] board) {
+		int rows = board.length;
+		int colArr[] = new int[rows];
+		placeQueneHelper(board, 0, colArr);
+	}
+
+	private void placeQueneHelper(int[][] board, int row, int[] colArr) {
+		if (row == board.length) {
+			for (int i = 0; i < colArr.length; ++i) {
+				System.out.println("Quene in row: " + i + " col: " + colArr[i]);
+			}
+		}
+		for (int i = 0; i < board[0].length; ++i) {
+			if (isAvailable(row, i, colArr)) {
+				colArr[row] = i;
+				placeQueneHelper(board, row + 1, colArr);
+			}
+			colArr[row] = 0;
+		}
+	}
+
+	private boolean isAvailable(int row, int col, int[] colArr) {
+		for (int i = 0; i < row; ++i) {
+			if (colArr[i] == col)
+				return false;
+			if (Math.abs(colArr[i] - col) == i - row)
+				return false;
+		}
+		return true;
+	}
 }

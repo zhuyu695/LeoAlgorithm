@@ -1,5 +1,8 @@
 package Algorithm;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 public class LinkedListAlg {
@@ -21,7 +24,7 @@ public class LinkedListAlg {
 		}
 	}
 
-	/*-----------------------------reverse linked list using non-recursion----------------------*/
+	/*-----------------------------1.reverse linked list using non-recursion----------------------*/
 	public Node reverseListNonRecur(Node head) {
 		if (head == null) {
 			return null;
@@ -41,7 +44,7 @@ public class LinkedListAlg {
 		return prev;
 	}
 
-	/*-----------------------------reverse linked list using recursion----------------------*/
+	/*-----------------------------2.reverse linked list using recursion----------------------*/
 	public Node reverseListRecur(Node head) {
 		if (head == null) {
 			return null;
@@ -64,7 +67,7 @@ public class LinkedListAlg {
 		}
 	}
 
-	/*------------------------add 2 numbers--------------------*/
+	/*------------------------3.add 2 numbers--------------------*/
 	/*6->1->7 + 2->9->5     <=>    617 + 295 */
 	/*assume both length are the same, otherwise need do some padding*/
 	public Node addNumberNode(Node num1, Node num2) {
@@ -100,7 +103,7 @@ public class LinkedListAlg {
 		return cur;
 	}
 
-	/*------------remove duplicate in sorted list------------*/
+	/*------------4.remove duplicate in sorted list------------*/
 	public Node removeDup(Node head) {
 		if (head == null || head.next == null) {
 			return head;
@@ -115,7 +118,7 @@ public class LinkedListAlg {
 		return head;
 	}
 
-	/*-----------reverse nodes in K group-------------*/
+	/*-----------5.reverse nodes in K group-------------*/
 	/*For example,
 	  Given this linked list: 1->2->3->4->5
 
@@ -154,7 +157,7 @@ public class LinkedListAlg {
 		return head.next;
 	}
 
-	/*-----------Swap nodes in pairs--------------*/
+	/*-----------6.Swap nodes in pairs--------------*/
 	/*Given 1->2->3->4, you should return the list as 2->1->4->3.*/
 	public Node swapInPair(Node head) {
 		Node dummy = new Node();
@@ -170,5 +173,39 @@ public class LinkedListAlg {
 			prev = tmp;
 		}
 		return dummy.next;
+	}
+
+	/*-----------7.Merge k sorted linked list-----------*/
+	public Node mergeKList(List<Node> nodeList) {
+		if (nodeList == null || nodeList.isEmpty())
+			return null;
+		Comparator<Node> comp = new Comparator<Node>() {
+			public int compare(Node n1, Node n2) {
+				if (n1.value < n2.value)
+					return -1;
+				if (n1.value > n2.value)
+					return 1;
+				return 0;
+			}
+		};
+
+		PriorityQueue<Node> heap = new PriorityQueue<Node>(nodeList.size(), comp);
+		for (Node n : nodeList) {
+			heap.add(n);
+		}
+		Node head = null;
+		Node cur = null;
+		while(!heap.isEmpty()) {
+			if (head == null) {
+				head = heap.poll();
+				cur = head;
+			} else {
+				cur.next = heap.poll();
+				cur = cur.next;
+			}
+			if (cur.next != null)
+				heap.add(cur.next);
+		}
+		return head;
 	}
 }
