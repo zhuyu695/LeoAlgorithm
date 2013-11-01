@@ -1,6 +1,7 @@
 package Algorithm;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -742,5 +743,143 @@ public class Practice {
     		}
     	}
     	return result;
+    }
+
+    /*21.The count-and-say sequence is the sequence of integers beginning as follows:
+     * 1, 11, 21, 1211, 111221, …
+     * 1 is read off as “one 1″ or 11.
+     * 11 is read off as “two 1s” or 21.
+     * 21 is read off as “one 2, then one 1″ or 1211.
+     * Given an integer n, generate the nth sequence.*/
+    public String countAndSay(int num) {
+    	String str = "1";
+    	for (int i = 1; i < num; ++i) {
+    		str = countAndSayHelper(str);
+    	}
+    	return str;
+    }
+
+    private String countAndSayHelper(String str) {
+    	char[] chArr = str.toCharArray();
+    	StringBuilder sbuilder = new StringBuilder();
+    	char prevCh = chArr[0];
+    	int counter = 1;
+    	for (int i = 1; i < chArr.length; ++i) {
+    		if (prevCh != chArr[i]) {
+    			sbuilder.append(counter + '0');
+    			sbuilder.append(prevCh);
+    			prevCh = chArr[i];
+    			counter = 1;
+    			continue;
+    		} else {
+    			++counter;
+    		}
+    	}
+    	sbuilder.append(counter + '0');
+		sbuilder.append(prevCh);
+		return sbuilder.toString();
+    }
+
+    /*22.Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.
+     * If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
+     * The replacement must be in-place, do not allocate extra memory.
+     * Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
+     * 1,2,3 → 1,3,2
+     * 3,2,1 → 1,2,3
+     * 1,1,5 → 1,5,1*/
+    public void nextPermutation(int a[]) {
+    	int res[] = new int[a.length];
+    	int i = a.length - 1;
+    	while (i > 0 && a[i - 1] > a[i]) {
+    		--i;
+    	}
+    	if (i == 0) {
+    		reverseArr(a, 0 , a.length - 1);
+    	}
+    	--i;
+    	int j = i + 1;
+    	while (j < a.length && a[j] > a[i]) {
+    		++j;
+    	}
+    	--j;
+    	swap(a, i, j);
+    	reverseArr(a, i + 1, a.length - 1);
+    }
+
+    public void reverseArr(int a[], int s, int e) {
+    	for (int i = s; i < (e + s) / 2; ++i) {
+    		swap(a, i, e - i);
+    	}
+    }
+
+    public void swap(int a[], int i, int j) {
+    	int tmp = a[i];
+    	a[i] = a[j];
+    	a[j] = tmp;
+    }
+
+    /*23.Container With Most Water
+     * Given n non-negative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai).
+     * n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines,
+     * which together with x-axis forms a container, such that the container contains the most water.
+     * Note: You may not slant the container. */
+    public int maxArea(int[] height) {
+    	int i = 0;
+    	int j = height.length - 1;
+    	int max_area = 0;
+    	while (i < j) {
+    		int curHeight = height[i] > height[j] ? height[j] : height[i];
+    		int area = curHeight * (j - i);
+    		max_area = Math.max(max_area, area);
+    		if (curHeight == height[i]) {
+    			while(j > i && height[i] <= curHeight)
+    				++i;
+    		} else {
+    			while(j > i && height[j] <= curHeight)
+    				--j;
+    		}
+    	}
+    	return max_area;
+    }
+
+    /*24.Given an unsorted integer array, find the first missing positive integer.
+     * positive integer starts with 1...
+     * For example,
+     * Given [1,2,0] return 3,
+     * and [3,4,-1,1] return 2. */
+    public int getFirstMissingPositive(int a[]) {
+    	for (int i = 0; i < a.length;) {
+    		//logic: move a[i] to index a[i] - 1
+    		//Then loop from start find the first missing: 1, 2, 3...-1, *
+    		if (a[i] >= 1 && a[i] <= a.length
+    				&& a[i] != i + 1) {
+    			swap(a, i, a[i] - 1);
+    		} else {
+    			++i;
+    		}
+    	}
+    	int i = 0;
+    	for (; i < a.length; ++i) {
+    		if (a[i] != i + 1)
+    			return i + 1;
+    	}
+    	return i + 1;
+    }
+
+    /*25.Say you have an array for which the ith element is the price of a given stock on day i.
+     * Design an algorithm to find the maximum profit. You may complete as many transactions as you like
+     * (ie, buy one and sell one share of the stock multiple times). However,
+     * you may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).*/
+    public int getProfitMulTrans(int a[]) {
+    	int profit = 0;
+    	int buy = a[0];
+    	for (int i = 1; i < a.length; ++i) {
+    		if (a[i] > buy) {
+    			profit += a[i] - buy;
+    		} else {
+    			buy = a[i];
+    		}
+    	}
+    	return profit;
     }
 }
