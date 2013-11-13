@@ -88,7 +88,7 @@ public class Practice {
     public boolean treeMatch(Node nodeBig, Node nodeSmall) {
 	if (nodeSmall == null) {
 	    return true;
-	} else if (nodeSmall.value().equals(nodeSmall.value())) {
+	} else if (nodeSmall.value().equals(nodeBig.value())) {
 	    return treeMatch(nodeBig.getLeft(), nodeSmall.getLeft()) && treeMatch(nodeBig.getRight(), nodeSmall.getRight());
 	} else {
 	    return false;
@@ -129,7 +129,7 @@ public class Practice {
     }
 
     private ArrayList<Integer> getItem(int[][] matrix, int[] W) {
-	int j = 8, i = 6;
+	int j = 10, i = 6;
 	ArrayList<Integer> resultList = new ArrayList<Integer>();
 	while(i > 0) {
 	    if (matrix[i][j] != matrix[i-1][j]) {
@@ -370,12 +370,12 @@ public class Practice {
     	int mid = (end + start) / 2;
     	if (arr[mid] == mid)
     		return mid;
-    	int leftInd = Math.min(arr[mid], mid + 1);
+    	int leftInd = Math.min(arr[mid - 1], mid - 1);
     	int left = foundMagicIndex(arr, start, leftInd);
     	if (left != -1) {
     		return left;
     	}
-    	int rightInd = Math.max(arr[mid], mid + 1);
+    	int rightInd = Math.max(arr[mid + 1], mid + 1);
     	return foundMagicIndex(arr, rightInd, end);
     }
 
@@ -881,5 +881,37 @@ public class Practice {
     		}
     	}
     	return profit;
+    }
+
+    /*26.Spiral Print a matrix*/
+    public void spriralPrint(int a[][]) {
+    	int rows = a.length;
+    	int cols = a[0].length;
+
+    	int r = 0;
+    	int c = 0;
+
+    	while (r < rows && c < cols) {
+    		for (int i = c; i < cols; ++i) {
+    			System.out.print(a[r][i]);
+    		}
+    		++r;
+    		for (int i = r; i < rows; ++i) {
+    			System.out.print(a[i][cols - 1]);
+    		}
+    		--cols;
+    		if (r < rows) {
+	    		for (int i = cols - 1; i >= c; --i) {
+	    			System.out.print(a[rows - 1][i]);
+	    		}
+	    		--rows;
+    		}
+    		if (c < cols) {
+	    		for (int i = rows - 1; i >= r; --i) {
+	    			System.out.print(a[i][c]);
+	    		}
+	    		++c;
+    		}
+    	}
     }
 }

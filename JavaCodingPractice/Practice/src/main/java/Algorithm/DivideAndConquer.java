@@ -32,6 +32,7 @@ public class DivideAndConquer {
 				if (newInterval.end < intervals.get(i).start) {
 					result.add(newInterval);
 					isLarge = false;
+					--i;
 					continue;
 				}
 				newInterval.start = newInterval.start > intervals.get(i).start ? intervals.get(i).start : newInterval.start;
@@ -114,6 +115,7 @@ public class DivideAndConquer {
 				}
 				break;
 			}
+		}
 		return false;
 	}
 }

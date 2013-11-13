@@ -61,7 +61,7 @@ public class MyTest {
 			result.add(path.clone());
 		path.add(node);
 		for (GNode child : node.getChildren()) {
-			getPath(node, path, result);
+			getPath(child, path, result);
 			path.remove(child);
 		}
 	}

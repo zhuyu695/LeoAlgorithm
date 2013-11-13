@@ -5,11 +5,11 @@ import java.util.Random;
 public class Randomization {
 	/*---------1. Select random number from stream---------*/
 	// A function to randomly select a item from stream[0], stream[1], .. stream[i-1]
+	int res = 0;    // The resultant random number
+    int count = 0;  //Count of numbers visited so far in stream
+
 	int selectRandom(int x)
 	{
-	    int res = 0;    // The resultant random number
-	    int count = 0;  //Count of numbers visited so far in stream
-
 	    count++;  // increment count of numbers seen so far
 	    // If this is the first element from stream, return it
 	    Random rand = new Random();
@@ -21,7 +21,7 @@ public class Randomization {
 	        int i = rand.nextInt() % count;
 
 	        // Replace the prev random number with new number with 1/count probability
-	        if (i == count - 1)
+	        if (i == count)
 	            res  = x;
 	    }
 	    return res;

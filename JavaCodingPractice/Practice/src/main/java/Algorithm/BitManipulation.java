@@ -11,10 +11,11 @@ public class BitManipulation {
 	}
 
 	/*-----------------reverse bits of an integer-----------------------*/
+	/* numberOfBits = bit length of elem - 1*/
 	public int reverseBit(int elem, int numberOfBits) {
 		int result = elem;
 		for (int i=0; i<numberOfBits/2; ++i) {
-			result = swapBit(result, i, numberOfBits - i - 1);
+			result = swapBit(result, i, numberOfBits - i);
 		}
 		return result;
 	}

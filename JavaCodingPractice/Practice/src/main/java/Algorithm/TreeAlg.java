@@ -10,6 +10,7 @@ public class TreeAlg {
 		public int value;
 		public BinaryTreeNode left;
 		public BinaryTreeNode right;
+		public BinaryTreeNode next; //sibling nodes
 		public BinaryTreeNode(int val) {
 			value = val;
 		}
@@ -241,5 +242,52 @@ public class TreeAlg {
     	}
     	findRootToLeafSum(root.left, cur);
     	findRootToLeafSum(root.right, cur);
+    }
+
+    /*12. Perfect Binary Tree: Populating Next Right Pointers in Each Node*/
+    public void connectPerfectBinaryTree(BinaryTreeNode root) {
+		BinaryTreeNode runner = root;
+    	while(runner != null) {
+    		BinaryTreeNode across = runner;
+    		while(across != null) {
+    			if (across.left != null)
+    				across.left.next = across.right;
+    			if (across.right != null && across.next != null)
+    				across.right.next = across.next.left;
+    			across = across.next;
+    		}
+    		runner = runner.left;
+    	}
+    }
+
+    /*12.1 Any Binary Tree: Populating Next Right Pointers in Each Node*/
+    public void connectBinaryTree(BinaryTreeNode root) {
+    	if (root == null)
+    		return;
+    	if (root.next == null) {
+    		if (root.right != null) root.right.next = null;
+    		if (root.left != null) root.left = root.right != null ? root.right : null;
+    	} else {
+    		BinaryTreeNode across = root.next; //connect root's left or right to root's siblings left or right
+    		while (across != null) {
+    			if (across.left != null) {
+    				across = across.left;
+    				break;
+    			}
+    			if (across.right != null) {
+    				across = across.right;
+    				break;
+    			}
+    			across = across.next;
+    		}
+    		if (across != null) {
+    			if (root.right != null)
+    				root.right.next = across;
+    			if (root.left != null)
+    				root.left = root.right != null ? root.right : across;
+    		}
+    	}
+    	connectBinaryTree(root.right); //traverse order is important
+    	connectBinaryTree(root.left);
     }
 }

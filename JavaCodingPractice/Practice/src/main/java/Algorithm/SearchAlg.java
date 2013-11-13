@@ -26,13 +26,13 @@ public class SearchAlg {
 			if (board[0][i] == 'O')
 				//when converting to Point, y is row, x is col
 				flip(board, i, 0, 'Y');
-			if (rows != 1 && board[rows - 1][i] == 'O')
+			if (rows > 1 && board[rows - 1][i] == 'O')
 				flip(board, i, rows - 1, 'Y');
 		}
 		for (int i = 0; i < rows; ++i) {
 			if (board[i][0] == 'O')
 				flip(board, 0, i, 'Y');
-			if (cols != 1 && board[i][cols - 1] == 'O')
+			if (cols > 1 && board[i][cols - 1] == 'O')
 				flip(board, cols - 1, i, 'Y');
 		}
 
