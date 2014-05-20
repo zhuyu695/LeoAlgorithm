@@ -3,3 +3,6 @@ target
 .classpath
 .settings
 .checkstyle
+*.jar
+.cache
+*.sbt
