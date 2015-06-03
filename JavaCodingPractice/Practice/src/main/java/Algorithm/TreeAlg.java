@@ -2,6 +2,7 @@ package Algorithm;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -289,5 +290,59 @@ public class TreeAlg {
     	}
     	connectBinaryTree(root.right); //traverse order is important
     	connectBinaryTree(root.left);
+    }
+    
+    /**
+     * Definition for a binary tree node.
+     * public class TreeNode {
+     *     int val;
+     *     TreeNode left;
+     *     TreeNode right;
+     *     TreeNode(int x) { val = x; }
+     * }
+     */
+    public class Solution {
+        public List<List<Integer>> pathSum(BinaryTreeNode root, int sum) {
+            List<List<Integer>> sums = new ArrayList<List<Integer>>();
+            pathSumHelper(root, sum, sums);
+            return sums;
+        }
+        
+        private boolean pathSumHelper(BinaryTreeNode root, int sum, List<List<Integer>> sums) {
+            if (root == null)
+                return false;
+                
+            sum -= root.value;
+            
+            if ( root.left == null && root.right == null) {
+                if (sum == 0) {
+                    List<Integer> allSum = new ArrayList<Integer>();
+                    allSum.add(root.value);
+                    sums.add(allSum);
+                    return true;
+                }
+                else 
+                    return false;
+            }
+            
+            boolean isCorrect = false;
+            List<List<Integer>> rightSums = new ArrayList<List<Integer>>(sums);
+            if (pathSumHelper(root.left, sum, sums)) { 
+                isCorrect = true;
+            }
+            
+            if (pathSumHelper(root.right, sum, rightSums)) { 
+                isCorrect = true;
+            }
+            sums.addAll(rightSums);
+            if (isCorrect) {
+                for (int i = 0; i < sums.size(); i++) {
+                    List<Integer> allSum = sums.get(i);
+                    allSum.add(0, root.value);
+                } 
+                return true;
+            } else 
+                return false;
+        }
     }
 }
