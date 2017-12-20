@@ -22,7 +22,7 @@ public class SortingAlg {
 		}
 		int i = left, j = mid + 1, k = left;
 		while (i <= mid && j <= right) {
-			if (arr[i] < arr[j]) {
+			if (helper[i] < helper[j]) {
 				arr[k] = helper[i];
 				++i;
 			} else {
@@ -143,4 +143,46 @@ public class SortingAlg {
 			return -1;
 		}
 	};
+	
+	//Count inverse:
+	public int countInversion(int[] num) {
+        return mergeSort(num, 0, num.length-1);
+    }
+
+    public int mergeSort(int[] num, int start, int end) {
+        if (start < end) {
+            int mid = (start + end)/ 2;
+            int left = mergeSort(num, start, mid);
+            int right = mergeSort(num, mid+1, end);
+            int merged = merge(num, start, mid, end);
+            return left + right + merged;
+        }
+        return 0;
+    }
+
+    public int merge(int[] num, int start, int mid, int end) {
+        int inverse = 0;
+        int[] helper = new int[num.length];
+        for (int i=start; i<=end; ++i) {
+            helper[i] = num[i];
+        }
+        int i=start, j=mid+1, k=i;
+        while(i<=mid && j<=end) {
+            if (helper[i] < helper[j]) {
+                num[k] = helper[i];
+                ++i;
+            } else {
+                num[k] = helper[j];
+                ++j;
+                inverse += (mid + 1 -i);
+            }
+            ++k;
+        }
+        int remaining = mid-i;
+        for (int n=0; n<=remaining; ++n) {
+            num[k+n] = helper[i+n];
+        }
+
+        return inverse;
+    }
 }
