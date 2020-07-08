@@ -51,8 +51,7 @@ public class AirbnbFindNumberOrder {
         if (adj.containsKey(v)) {
             for (int neighbour : adj.get(v)) {
                 if (visited.containsKey(neighbour)) {
-                    if ((visited.get(neighbour) == 1)
-                            || (visited.get(neighbour) == 0 && isCycle(neighbour, adj, visited, res))) {
+                    if ((visited.get(neighbour) == 1)) {
                         res.clear();
                         return true;
                     }
@@ -71,8 +70,8 @@ public class AirbnbFindNumberOrder {
 
     public static void main(String[] args) {
     	AirbnbFindNumberOrder it = new AirbnbFindNumberOrder();
-        int[][] inputs = {{3 ,10, 5}, {2, 10, 5, 6}};
-
+//        int[][] inputs = {{3 ,10, 5}, {2, 10, 5, 6}};
+        int [][] inputs = {{3, 1, 4, 9, 6}, {3, 2, 1, 4}, {1, 5, 4, 7, 9}};
         List<Integer> res = it.getOrder(inputs);
         System.out.println(res.toString());
     }

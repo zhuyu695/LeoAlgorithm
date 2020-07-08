@@ -61,7 +61,8 @@ public class BackTracking {
 	}
 
 	int sudokuRange = 9;
-	public boolean solveSudoku(int grid[][]) {
+
+	public boolean solveSudokuCheck(char grid[][]) {
 		int row = 0, col = 0;
 		SudokuChecking schecking = findUnassignedLocation(grid);
 		if (!schecking.result) {
@@ -71,24 +72,26 @@ public class BackTracking {
 			col = schecking.col;
 		}
 		for (int num = 1; num <= 9; ++num) {
-			if (isSafe(grid, row, col, num)) {
-				if (solveSudoku(grid)) {
+			if (isSafe(grid, row, col, (char)(num+'0'))) {
+				grid[row][col] = (char)(num+'0');
+				if (solveSudokuCheck(grid)) {
 					return true;
 				}
 			}
-			grid[row][col] = 0;
+			grid[row][col] = '.';
 		}
 		return false;
 	}
 
-	private SudokuChecking findUnassignedLocation(int grid[][]){
+	private SudokuChecking findUnassignedLocation(char grid[][]){
 		SudokuChecking sc = new SudokuChecking();
 		for (int row = 0; row < sudokuRange; ++row) {
 			for (int col = 0; col < sudokuRange; ++col) {
-				if (grid[row][col] == 0) {
+				if (grid[row][col] == '.') {
 					sc.row = row;
 					sc.col = col;
 					sc.result = true;
+					return sc;
 				}
 			}
 		}
@@ -96,13 +99,13 @@ public class BackTracking {
 		return sc;
 	}
 
-	private boolean isSafe(int grid[][], int row, int col, int num) {
+	private boolean isSafe(char grid[][], int row, int col, char num) {
 		return !usedInRow(grid, row, num)
 				&& !usedInCol(grid, col, num)
 				&& !usedInBox(grid, row - row % 3, col - col % 3, num);
 	}
 
-	private boolean usedInRow(int grid[][], int row, int num) {
+	private boolean usedInRow(char grid[][], int row, char num) {
 		for (int i = 0; i < sudokuRange; ++i) {
 			if (grid[row][i] == num)
 				return true;
@@ -110,7 +113,7 @@ public class BackTracking {
 		return false;
 	}
 
-	private boolean usedInCol(int grid[][], int col, int num) {
+	private boolean usedInCol(char grid[][], int col, char num) {
 		for (int i = 0; i < sudokuRange; ++i) {
 			if (grid[i][col] == num)
 				return true;
@@ -118,14 +121,18 @@ public class BackTracking {
 		return false;
 	}
 
-	private boolean usedInBox(int grid[][], int boxStartRow, int boxStartCol, int num) {
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++i) {
+	private boolean usedInBox(char grid[][], int boxStartRow, int boxStartCol, char num) {
+		for (int i = boxStartRow; i < 3 + boxStartRow; ++i) {
+			for (int j = boxStartCol; j < 3 + boxStartCol; ++j) {
 				if (grid[i][j] == num)
 					return true;
 			}
 		}
 		return false;
+	}
+
+	public void solveSudoku(char[][] board) {
+		solveSudokuCheck(board);
 	}
 
 	/*-------------------4. Word Ladder-----------------*/
@@ -172,5 +179,30 @@ public class BackTracking {
 			}
 		}
 		return words;
+	}
+
+	//---------------------- Test ----------------------
+	public static void main(String[] args) {
+		BackTracking bt = new BackTracking();
+		//Soduku
+		String[][] boardStr = {{"5","3",".",".","7",".",".",".","."},
+				{"6",".",".","1","9","5",".",".","."},
+				{".","9","8",".",".",".",".","6","."},
+				{"8",".",".",".","6",".",".",".","3"},
+				{"4",".",".","8",".","3",".",".","1"},
+				{"7",".",".",".","2",".",".",".","6"},
+				{".","6",".",".",".",".","2","8","."},
+				{".",".",".","4","1","9",".",".","5"},
+				{".",".",".",".","8",".",".","7","9"}};
+		char[][] board = new char[boardStr.length][boardStr[0].length];
+		for(int i=0; i<boardStr.length; ++i) {
+			for(int j=0; j<boardStr[0].length; ++j) {
+				board[i][j] = boardStr[i][j].charAt(0);
+			}
+		}
+
+		bt.solveSudoku(board);
+		System.out.println(board);
+
 	}
 }

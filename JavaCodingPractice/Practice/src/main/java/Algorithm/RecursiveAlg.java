@@ -51,10 +51,13 @@ public class RecursiveAlg {
     public int numOfDistinctDP(String S, String T) {
     	if (S.length() < T.length())
     		return 0;
-    	int t[][] = new int[T.length()][S.length()];
+    	int t[][] = new int[T.length() + 1][S.length() + 1];
     	for (int j = 0; j <= S.length(); ++j) {
     		t[0][j] = 1;
     	}
+    	for (int i = 0; i <= T.length(); ++i) {
+    		t[i][0] = 0;
+		}
     	for (int j = 1; j <= S.length(); ++j) {
     		for (int i = T.length(); i >= 1; --i) {
     			if (S.charAt(j) == T.charAt(i)) {

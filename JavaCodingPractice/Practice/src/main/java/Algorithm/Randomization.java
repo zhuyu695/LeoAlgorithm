@@ -21,7 +21,7 @@ public class Randomization {
 	        int i = rand.nextInt() % count;
 
 	        // Replace the prev random number with new number with 1/count probability
-	        if (i == count)
+	        if (i == count - 1)
 	            res  = x;
 	    }
 	    return res;

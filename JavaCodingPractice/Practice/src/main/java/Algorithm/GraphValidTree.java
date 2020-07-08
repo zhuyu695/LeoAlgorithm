@@ -1,6 +1,13 @@
 package Algorithm;
 
 //Union Find
+//Given n nodes labeled from 0 to n - 1 and a list of undirected edges (each edge is a pair of nodes), write a function to check whether these edges make up a valid tree.
+//To check whether a graph is a tree, we should determine:
+//whether there is a cycle, if there is cycle, it is not a tree.
+//whether the nodes are connected. If it is not connected, it is not tree.
+//For example:
+//Given n = 5 and edges = [[0, 1], [0, 2], [0, 3], [1, 4]], return true.
+//Given n = 5 and edges = [[0, 1], [1, 2], [2, 3], [1, 3], [1, 4]], return false.
 public class GraphValidTree {
 	public boolean validTree(int n, int[][] edges) {
         int[] root = new int[n];
@@ -21,5 +28,12 @@ public class GraphValidTree {
             return e;
         else
             return find(root, root[e]);
+    }
+
+    public static void main(String[] args) {
+        GraphValidTree vt = new GraphValidTree();
+        int[][] edges = {{0, 1}, {1, 2}, {2, 3}, {1, 3}, {1, 4}};
+        System.out.println( vt.validTree(5, edges));
+
     }
 }

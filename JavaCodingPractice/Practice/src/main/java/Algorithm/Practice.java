@@ -71,18 +71,17 @@ public class Practice {
     }
 
     public boolean isSubTree(Node nodeBig, Node nodeSmall) {
-	if (nodeBig == null && nodeSmall == null) {
-	    return true;
-	} else if (nodeBig == null) {
-	    return false;
-	} else if (nodeSmall == null) {
-	    return true;
-	} else if (nodeBig.value().equals(nodeSmall.value())){
-	    return treeMatch(nodeBig.getLeft(), nodeSmall) || treeMatch(nodeBig.getRight(), nodeSmall);
-	} else {
-	    return false;
-	}
-
+		if (nodeBig == null && nodeSmall == null) {
+			return true;
+		} else if (nodeBig == null) {
+			return false;
+		} else if (nodeSmall == null) {
+			return true;
+		} else if (nodeBig.value().equals(nodeSmall.value()) && treeMatch(nodeBig, nodeSmall)){
+			return true;
+		} else {
+			return isSubTree(nodeBig.leftNode, nodeSmall) || isSubTree(nodeBig.rightNode, nodeSmall);
+		}
     }
 
     public boolean treeMatch(Node nodeBig, Node nodeSmall) {
@@ -100,7 +99,7 @@ public class Practice {
     public ArrayList<Integer> processKnapsack() {
 		int[] Weight = {0, 2, 3, 4, 5, 7, 8}; // 7elements
 		int[] Price = {0, 3, 4, 5, 6, 8, 9};
-		int DPMatrix[][] = new int[7][11];
+		int DPMatrix[][] = new int[7 + 1][11];
 		generateMatrix(DPMatrix, Weight, Price);
 		ArrayList<Integer> result = getItem(DPMatrix, Weight);
 		return result;
@@ -113,17 +112,17 @@ public class Practice {
 		for (int i = 0; i < 7; ++i) {
 		    matrix[i][0] = 0;
 		}
-		for (int i = 0; i < 7; ++i) {
+		for (int i = 1; i < 7 + 1; ++i) {
 		    //largest weight is 10, start with 0
-		    for (int j = 0; j< 11; ++j) {
-			if (W[i] > j) {
-			    matrix[i][j] = matrix[i-1][j];
-			}
-			else if (matrix[i-1][j-W[i]] + P[i] > matrix[i-1][j]) {
-			    matrix[i][j] = matrix[i-1][j-W[i]] + P[i];
-			} else {
-			    matrix[i][j] = matrix[i-1][j];
-			}
+		    for (int j = 1; j< 11; ++j) {
+				if (W[i] > j) {
+					matrix[i][j] = matrix[i-1][j];
+				}
+				else if (matrix[i-1][j-W[i]] + P[i] > matrix[i-1][j]) {
+					matrix[i][j] = matrix[i-1][j-W[i]] + P[i];
+				} else {
+					matrix[i][j] = matrix[i-1][j];
+				}
 		    }
 		}
     }
@@ -197,7 +196,7 @@ public class Practice {
     	while (st.size() > 0) {
     		char curChar = st.pop();
     		if (curChar != '(') {
-	    		if (curChar == '*') {
+	    		if (curChar == '*' && !fst.isEmpty()) {
 	    			fst.pop();
 	    			fst.add(prevRand * toInt(st.pop()));
 	    		} else {
@@ -709,7 +708,7 @@ public class Practice {
     	return b;
     }
 
-    /*20. Given an array S of n integers, are there elements a, b, c in S such that a + b + c = 0?*/
+    /*20. Given an array S of n integers, are there elements a, b, c in S such that a + b + c = 0*/
     /* Find all unique triplets in the array which gives the sum of zero.-----------*/
     public ArrayList<ArrayList<Integer>> getTriplets(int a[]) {
     	ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
@@ -752,7 +751,7 @@ public class Practice {
      * 21 is read off as “one 2, then one 1″ or 1211.
      * Given an integer n, generate the nth sequence.*/
     public String countAndSay(int num) {
-    	String str = "1";
+		String str = "1";
     	for (int i = 1; i < num; ++i) {
     		str = countAndSayHelper(str);
     	}
@@ -766,7 +765,7 @@ public class Practice {
     	int counter = 1;
     	for (int i = 1; i < chArr.length; ++i) {
     		if (prevCh != chArr[i]) {
-    			sbuilder.append(counter + '0');
+    			sbuilder.append((char) (counter + '0'));
     			sbuilder.append(prevCh);
     			prevCh = chArr[i];
     			counter = 1;
@@ -775,7 +774,7 @@ public class Practice {
     			++counter;
     		}
     	}
-    	sbuilder.append(counter + '0');
+    	sbuilder.append((char) (counter + '0'));
 		sbuilder.append(prevCh);
 		return sbuilder.toString();
     }
@@ -788,29 +787,28 @@ public class Practice {
      * 3,2,1 → 1,2,3
      * 1,1,5 → 1,5,1*/
     public void nextPermutation(int a[]) {
-    	int res[] = new int[a.length];
-    	int i = a.length - 1;
-    	while (i > 0 && a[i - 1] > a[i]) {
+    	int i = a.length - 2;
+    	while (i >= 0 && a[i + 1] <= a[i]) {
     		--i;
     	}
-    	if (i == 0) {
-    		reverseArr(a, 0 , a.length - 1);
+    	if (i >= 0) {
+			int j = i + 1;
+			while (j < a.length && a[j] > a[i]) {
+				++j;
+			}
+			--j;
+			swap(a, i, j);
     	}
-    	--i;
-    	int j = i + 1;
-    	while (j < a.length && a[j] > a[i]) {
-    		++j;
-    	}
-    	--j;
-    	swap(a, i, j);
     	reverseArr(a, i + 1, a.length - 1);
     }
 
-    public void reverseArr(int a[], int s, int e) {
-    	for (int i = s; i < (e + s) / 2; ++i) {
-    		swap(a, i, e - i);
-    	}
-    }
+	public void reverseArr(int a[], int s, int e) {
+		while(s < e) {
+			swap(a, s, e);
+			++s;
+			--e;
+		}
+	}
 
     public void swap(int a[], int i, int j) {
     	int tmp = a[i];
@@ -914,4 +912,9 @@ public class Practice {
     		}
     	}
     }
+
+    public static void main(String[] args) {
+    	Practice p = new Practice();
+    	System.out.println(p.countAndSay(4));
+	}
 }

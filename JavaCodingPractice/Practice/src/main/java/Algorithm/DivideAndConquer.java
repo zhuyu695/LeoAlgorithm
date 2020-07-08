@@ -36,13 +36,15 @@ public class DivideAndConquer {
 					continue;
 				}
 				newInterval.start = newInterval.start > intervals.get(i).start ? intervals.get(i).start : newInterval.start;
-				newInterval.end = newInterval.end > intervals.get(i).end ? newInterval.end : intervals.get(0).end;
+				newInterval.end = newInterval.end > intervals.get(i).end ? newInterval.end : intervals.get(i).end;
 			} else {
 				result.add(intervals.get(i));
 			}
 		}
 		if (isLarge) {
 			result.add(intervals.get(i));
+		} else {
+			result.add(newInterval);
 		}
 		return result;
 	}
