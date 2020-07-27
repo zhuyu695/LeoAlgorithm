@@ -6,3 +6,7 @@ target
 *.jar
 .cache
 *.sbt
+.DS_Store
+*.idea
+*.iml
+out
