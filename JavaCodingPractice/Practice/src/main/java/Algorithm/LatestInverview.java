@@ -386,6 +386,74 @@ public class LatestInverview {
         return res;
     }
 
+    //Reverse Pairs
+//    Input: [1,3,2,3,1]
+//    Output: 2
+    public int reversePairs0(int[] nums) {
+        int total = 0;
+        for (int i=0; i<nums.length; ++i) {
+            for (int j=i+1; j<nums.length; ++j) {
+                if (i<j && (float) nums[i] / 2 - nums[j] > 0) {
+                    ++total;
+                }
+            }
+        }
+        return total;
+    }
+
+    public int reversePairs(int[] nums) {
+        return mergeSort(nums, 0, nums.length - 1);
+    }
+
+    private int mergeSort(int[] nums, int lo, int hi) {
+        if (lo >= hi) return 0;
+        int mid = lo + (hi - lo) / 2;
+        int res = 0;
+        res += mergeSort(nums, lo, mid);
+        res += mergeSort(nums, mid + 1, hi);
+        res += merge(nums, lo, mid, hi);
+        return res;
+    }
+
+    private int merge(int[] nums, int lo, int mid, int hi) {
+        int[] tmp = new int[hi-lo+1];
+
+        int count = 0;
+        int l=lo;
+        int r=mid+1;
+
+        while(l<=mid && r<=hi) {
+            if ((long) nums[l] > 2 * (long) nums[r]) {
+                count += mid - l + 1;
+                ++r;
+            } else {
+                ++l;
+            }
+        }
+
+        l=lo;
+        r=mid+1;
+        int index=0;
+
+        while(l<=mid && r<=hi) {
+            if (nums[l] > nums[r]) {
+                tmp[index++] = nums[r++];
+            } else {
+                tmp[index++] = nums[l++];
+            }
+        }
+        while(l<=mid) {
+            tmp[index++] = nums[l++];
+        }
+        while(r<=hi) {
+            tmp[index++] = nums[r++];
+        }
+        for(int i=lo; i<=hi; ++i) {
+            nums[i] = tmp[i-lo];
+        }
+        return count;
+    }
+
     public static void main(String[] args) {
         LatestInverview li = new LatestInverview();
 //        ListNode e = new ListNode(5);
@@ -395,7 +463,10 @@ public class LatestInverview {
 //        ListNode a = new ListNode(1, b);
 //        li.reverseKGroup(a, 2);
 
-        int[] a = {4,2,2,2,4,4,2,2};
-        System.out.println(li.longestSubarray2(a, 0));
+//        int[] a = {4,2,2,2,4,4,2,2};
+//        System.out.println(li.longestSubarray2(a, 0));
+
+        int[] a = {1, 3, 2, 3, 1};
+        li.reversePairs(a);
     }
 }
