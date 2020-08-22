@@ -856,6 +856,580 @@ public class GoogleInterview {
         parent[i] = j;
     }
 
+    //Insert Interval
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        // init data
+        int newStart = newInterval[0], newEnd = newInterval[1];
+        int idx = 0, n = intervals.length;
+        ArrayList<int[]> output = new ArrayList<int[]>();
+
+        // add all intervals before newInterval
+        while (idx < n && intervals[idx][1] < newStart)
+            output.add(intervals[idx++]);
+
+        // merge newInterval
+        int[] interval = new int[2];
+        while(idx < n && intervals[idx][0] <= newEnd)
+        {
+            newStart = Math.min(newStart, intervals[idx][0]);
+            newEnd = Math.max(newEnd, intervals[idx][1]);
+            ++idx;
+        }
+        output.add(new int[]{newStart, newEnd});
+
+        // add all intervals after newInterval
+        while (idx < n)
+            output.add(intervals[idx++]);
+
+        return output.toArray(new int[output.size()][2]);
+    }
+
+    //Split Array Largest Sum
+//    Input:
+//    nums = [7,2,5,10,8]
+//    m = 2
+//
+//    Output:
+//            18
+//
+//    Explanation:
+//    There are four ways to split nums into two subarrays.
+//    The best way is to split it into [7,2,5] and [10,8],
+//    where the largest sum among the two subarrays is only 18.
+
+    public int splitArray(int[] nums, int m) {
+        //0~j into i groups
+        //d[i][j] = min{max(d[i-1][k], sum(k+1...j))}
+        //d[1][j] = sum(0...j)
+
+        int[] sums = new int[nums.length];
+
+        for (int i=0; i<nums.length; ++i) {
+            if (i==0) {
+                sums[i] = nums[i];
+            } else {
+                sums[i] = sums[i-1] + nums[i];
+            }
+        }
+
+        int[][] d = new int[m+1][nums.length];
+
+        for (int i=1; i<=m; ++i) {
+            for (int j=0; j<nums.length; ++j) {
+                if (i == 1) {
+                    d[i][j] = sums[j];
+                } else {
+                    int minVal = Integer.MAX_VALUE;
+                    for (int k=0; k<j; ++k) {
+                        minVal = Math.min(Math.max(d[i-1][k], sums[j] - sums[k]), minVal);
+                    }
+                    d[i][j] = minVal;
+                }
+            }
+        }
+        return d[m][nums.length-1];
+    }
+
+    //Maximum Product Subarray
+//    Input: [2,3,-2,4]
+//    Output: 6
+//    Explanation: [2,3] has the largest product 6.
+    public int maxProduct(int[] nums) {
+        if (nums.length == 0) return 0;
+        int curProduct = nums[0];
+        int curMin = nums[0];
+        int max = nums[0];
+        for (int i=1; i<nums.length; ++i) {
+            int prevProduct = curProduct;
+            curProduct = Math.max(nums[i], Math.max(nums[i] * curProduct, nums[i] * curMin));
+            curMin = Math.min(nums[i], Math.min(curMin * nums[i], prevProduct * nums[i]));
+            max = Math.max(curProduct, max);
+        }
+        return max;
+    }
+
+    //Coin Change
+//    Input: coins = [1, 2, 5], amount = 11
+//    Output: 3
+//    Explanation: 11 = 5 + 5 + 1
+    public int coinChange(int[] coins, int amount) {
+        if (coins.length == 0 || amount == 0) {
+            return 0;
+        }
+        //dp[i][j] : amount j, first i types
+        //dp[i][0] = 0
+        //dp[i][j] = min(dp[i-1][j-coins[i]] + 1, dp[i][j])
+        //dp[n][m]
+        int n = coins.length;
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE-1);
+        dp[0] = 0;
+        for (int i=0; i<n; ++i) {
+            for (int j=1; j<=amount; ++j) {
+                if (j - coins[i] >= 0) {
+                    dp[j] = Math.min(dp[j-coins[i]] + 1, dp[j]);
+                }
+            }
+        }
+        if (dp[amount] == Integer.MAX_VALUE-1) {
+            dp[amount] = -1;
+        }
+        return dp[amount];
+    }
+
+    //LRU cache
+    static class LRUCache {
+        int capacity;
+        int counter;
+        LinkedList<Integer> list;
+        Map<Integer, Integer> dic;
+
+        public LRUCache(int capacity) {
+            this.capacity = capacity;
+            list = new LinkedList();
+            dic = new HashMap();
+        }
+
+        public int get(int key) {
+            if (dic.containsKey(key)) {
+                list.remove(new Integer(key));
+                list.offerFirst(new Integer(key));
+                return dic.get(key);
+            } else {
+                return -1;
+            }
+        }
+
+        public void put(int key, int value) {
+            if (capacity == 0) {
+                return;
+            }
+            if (!dic.containsKey(key)) {
+                if (counter >= capacity) {
+                    int lastRec = list.getLast();
+                    list.remove(new Integer(lastRec));
+                    dic.remove(new Integer(lastRec));
+                    counter--;
+                }
+                counter++;
+            } else {
+                list.remove(new Integer(key));
+            }
+            list.offerFirst(key);
+            dic.put(key, value);
+        }
+    }
+
+    //Candy
+//    There are N children standing in a line. Each child is assigned a rating value.
+//
+//    You are giving candies to these children subjected to the following requirements:
+//
+//    Each child must have at least one candy.
+//    Children with a higher rating get more candies than their neighbors.
+//    What is the minimum candies you must give?
+//    Input: [1,0,2]
+//    Output: 5
+//    Explanation: You can allocate to the first, second and third child with 2, 1, 2 candies respectively.
+    public int candy(int[] ratings) {
+        if (ratings.length == 0) {
+            return 0;
+        }
+        int[] tracker = new int[ratings.length];
+        int total = 1;
+        int counter = 1;
+        for (int i=1; i<ratings.length; ++i) {
+            if (ratings[i] > ratings[i-1]) {
+                counter += 1;
+            } else if (ratings[i] == ratings[i-1]){
+                counter = 1;
+            } else if (ratings[i] < ratings[i-1]) {
+                if (counter == 1) {
+                    int runner = i-1;
+                    counter++;
+                    while(runner >= 0 && ratings[runner] > ratings[runner + 1] && counter > tracker[runner]) {
+                        tracker[runner] = counter;
+                        runner--;
+                        counter++;
+                        total++;
+                    }
+                }
+                counter = 1;
+            }
+            tracker[i] = counter;
+            total += counter;
+        }
+        return total;
+    }
+    // Better solution: have 2 arrays one leftToRight, one rightToLeft and pick max at each index of both.
+
+
+    //Isomorphic Strings
+//    Input: s = "egg", t = "add"
+//    Output: true
+    public boolean isIsomorphic(String s, String t) {
+        Map<Character, Character> tracker = new HashMap();
+
+        if (s.length() != t.length()) {
+            return false;
+        }
+
+        for (int i=0; i<s.length(); ++i) {
+            char fst = s.charAt(i);
+            char snd = t.charAt(i);
+            if (tracker.containsKey(fst) && !tracker.get(fst).equals(snd)) {
+                return false;
+            }
+            tracker.put(fst, snd);
+        }
+        Set<Character> unique = new HashSet(tracker.values());
+        if (unique.size() != tracker.size()) {
+            return false;
+        }
+        return true;
+    }
+
+    //Bulls and Cows
+//    Input: secret = "1807", guess = "7810"
+//    Output: "1A3B"
+//    Explanation: 1 bull and 3 cows. The bull is 8, the cows are 0, 1 and 7.
+    public String getHint(String secret, String guess) {
+        Map<Character, Integer> tracker = new HashMap();
+
+        int bulls = 0;
+        int cows = 0;
+        int n = secret.length();
+
+        for (int i=0; i<n; ++i) {
+            char s= secret.charAt(i);
+            char g= guess.charAt(i);
+
+            if (s == g) {
+                bulls++;
+            } else {
+                //found secret char match previous guess
+                if (tracker.getOrDefault(s, 0) < 0) {
+                    cows++;
+                }
+                //found guess char match previous secret
+                if (tracker.getOrDefault(g, 0) > 0) {
+                    cows++;
+                }
+
+                tracker.put(s, tracker.getOrDefault(s, 0) + 1);
+                tracker.put(g, tracker.getOrDefault(g, 0) - 1);
+            }
+        }
+        return Integer.valueOf(bulls) + "A" + Integer.valueOf(cows) + "B";
+    }
+
+    //Range Sum Query 2D - Mutable
+    int[][] sumMatrix;
+    int[][] updateMatrix;
+    int[][] rawMatrix;
+
+    public void construct(int[][] matrix) {
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            sumMatrix = new int[0][0];
+            updateMatrix = new int[0][0];
+            rawMatrix = new int[0][0];
+            return;
+        }
+
+        rawMatrix = matrix.clone();
+        sumMatrix = new int[matrix.length][matrix[0].length];
+
+        sumMatrix[0][0] = matrix[0][0];
+        for (int i=1; i<matrix[0].length; ++i) {
+            sumMatrix[0][i] = sumMatrix[0][i-1] + matrix[0][i];
+        }
+        for (int i=1; i<matrix.length; ++i) {
+            sumMatrix[i][0] = sumMatrix[i-1][0] + matrix[i][0];
+        }
+
+        for (int i=1; i<matrix.length; ++i) {
+            for (int j=1; j<matrix[0].length; ++j) {
+                sumMatrix[i][j] = sumMatrix[i-1][j] + sumMatrix[i][j-1] - sumMatrix[i-1][j-1] + matrix[i][j];
+            }
+        }
+
+        updateMatrix = new int[matrix.length][matrix[0].length];
+    }
+
+    public void update(int row, int col, int val) {
+        updateMatrix[row][col] = val;
+    }
+
+    public int sumRegion(int row1, int col1, int row2, int col2) {
+        int left = 0;
+        int upper = 0;
+        int inter = 0;
+        if (row1 > 0) {
+            upper = sumMatrix[row1-1][col2];
+        }
+        if (col1 > 0) {
+            left = sumMatrix[row2][col1-1];
+        }
+        if (row1 > 0 && col1 > 0) {
+            inter = sumMatrix[row1-1][col1-1];
+        }
+        int rawValue = sumMatrix[row2][col2]  - upper - left + inter;
+
+        for (int i=row1; i<=row2; ++i) {
+            for (int j=col1; j<=col2; ++j) {
+                if (updateMatrix[i][j] != 0) {
+                    rawValue += updateMatrix[i][j] - rawMatrix[i][j];
+                }
+            }
+        }
+        return rawValue;
+    }
+
+    //My Calendar II
+    TreeMap<Integer, Integer> delta;
+
+    public void constructCalendar() {
+        delta = new TreeMap();
+    }
+
+    public boolean book(int start, int end) {
+        delta.put(start, delta.getOrDefault(start, 0) + 1);
+        delta.put(end, delta.getOrDefault(end, 0) - 1);
+
+        int active = 0;
+        for (Map.Entry<Integer, Integer> entry: delta.entrySet()) {
+            int d = entry.getValue();
+            active += d;
+            if (active >= 3) {
+                delta.put(start, delta.get(start) - 1);
+                delta.put(end, delta.get(end) + 1);
+                if (delta.get(start) == 0)
+                    delta.remove(start);
+                return false;
+            }
+            if (end < entry.getKey()) {
+                break;
+            }
+        }
+        return true;
+    }
+
+//    Swap Adjacent in LR String
+//    Input: start = "RXXLRXRXL", end = "XRLXXRRLX"
+//    Output: True
+//    Explanation:
+//    We can transform start to end following these steps:
+//    RXXLRXRXL ->
+//    XRXLRXRXL ->
+//    XRLXRXRXL ->
+//    XRLXXRRXL ->
+//    XRLXXRRLX
+    public boolean canTransform(String start, String end) {
+        int n = start.length();
+
+        // count X in start and end --> should be the same
+        int count = 0;
+        for (int i = 0; i < n; ++i) {
+            if (start.charAt(i) == 'X') count++;
+            if (end.charAt(i) == 'X') count--;
+        }
+        if (count != 0) return false;
+
+        int i = 0, j = 0;
+        while (i < n && j < n) {
+            while (i < n && start.charAt(i) == 'X') i++;
+            while (j < n && end.charAt(j) == 'X') j++;
+
+            // i and j are the indices representing the next
+            // occurrences of non-X characters
+            if (i == n || j == n)
+                return i == n && j == n;
+
+            if (start.charAt(i) != end.charAt(j)) return false;
+            if (start.charAt(i) == 'L' && i < j) return false;
+            if (start.charAt(i) == 'R' && i > j) return false;
+
+            i++;
+            j++;
+        }
+
+        return true;
+    }
+
+    class Master {
+        public int guess(String s) { return 1;}
+    }
+
+//    Guess the Word
+    public void findSecretWord(String[] wordlist, Master master) {
+        List<String> target = Arrays.asList(wordlist);
+        for (int i=0; i<10; ++i) {
+            Random rand = new Random();
+            int index = rand.nextInt(target.size());
+            String pivot = target.get(index);
+            int sim = master.guess(pivot);
+            if (sim == 6) {
+                return;
+            }
+            List<String> tmpRes = new ArrayList();
+            for (int j=0; j<target.size(); ++j) {
+                if (target.get(j).equals(pivot)) {
+                    continue;
+                }
+                int tmpSim = similarity(pivot, target.get(j));
+                if (sim == tmpSim) {
+                    tmpRes.add(target.get(j));
+                }
+            }
+            target = tmpRes;
+        }
+
+    }
+
+    public int similarity(String a, String b) {
+        int sim = 0;
+        for (int i=0; i<a.length(); ++i) {
+            if (a.charAt(i) == b.charAt(i)) {
+                sim++;
+            }
+        }
+        return sim;
+    }
+
+
+    //Minimum Area Rectangle
+//    Input: [[1,1],[1,3],[3,1],[3,3],[4,1],[4,3]]
+//    Output: 2
+    class MyPoint implements Comparable<MyPoint> {
+        public int x;
+        public int y;
+
+        public MyPoint(int xx, int yy) {
+            x = xx;
+            y = yy;
+        }
+
+        @Override
+        public int compareTo(MyPoint other) {
+            if (x != other.x) {
+                return x - other.x;
+            }
+            return y - other.y;
+        }
+
+        @Override
+        public int hashCode(){
+            return 31 * x + y;
+        }
+
+        @Override
+        public boolean equals(Object other){
+            if(this == other) return true;
+            MyPoint tmp = (MyPoint) other;
+            return tmp.x == x && tmp.y == y;
+        }
+    }
+
+    public int minAreaRect(int[][] points) {
+        if (points.length == 0 || points[0].length == 0) {
+            return 0;
+        }
+        Set<MyPoint> tracker = new HashSet();
+        for (int[] point : points) {
+            tracker.add(new MyPoint(point[0], point[1]));
+        }
+        int res = Integer.MAX_VALUE;
+        for (int i=0; i<points.length; ++i) {
+            for (int j=i+1; j<points.length; ++j) {
+                int x1 = points[i][0];
+                int y1 = points[i][1];
+                int x2 = points[j][0];
+                int y2 = points[j][1];
+                if (x1 == x2 || y1 == y2) {
+                    continue;
+                }
+                Point p3 = new Point(x1, y2);
+                Point p4 = new Point(x2, y1);
+                if (tracker.contains(p3) && tracker.contains(p4)) {
+                    res = Math.min(res, Math.abs((x2-x1) * (y2-y1)));
+                }
+            }
+        }
+        if (res == Integer.MAX_VALUE) {
+            res = 0;
+        }
+        return res;
+    }
+
+
+    //sequence-reconstruction
+    Map<Integer, Integer> indegree = new HashMap();
+
+    public boolean sequenceReconstruction(int[] org, List<List<Integer>> seqs) {
+        if (org.length == 0 || seqs.size() == 0) {
+            return false;
+        }
+        Map<Integer, Set<Integer>> graph = buildMap(seqs);
+        return traverseGraph(graph, org, org[0]);
+    }
+
+    public Map<Integer, Set<Integer>> buildMap(List<List<Integer>> seqs) {
+        Map<Integer, Set<Integer>> graph = new HashMap();
+        for (List<Integer> ls : seqs) {
+            if (ls.size() == 1) {
+                indegree.putIfAbsent(ls.get(0), 0);
+            } else {
+                for (int i = 0; i < ls.size() - 1; ++i) {
+                    int a = ls.get(i);
+                    int b = ls.get(i + 1);
+                    graph.putIfAbsent(a, new HashSet<Integer>());
+                    indegree.putIfAbsent(a, 0);
+                    indegree.putIfAbsent(b, 0);
+                    if (!graph.containsKey(a) || !graph.get(a).contains(b)) {
+                        indegree.put(b, indegree.get(b) + 1);
+                    }
+                    graph.get(a).add(b);
+                }
+            }
+        }
+        return graph;
+    }
+
+    public boolean traverseGraph(Map<Integer, Set<Integer>>graph, int[] org, int start) {
+        Queue<Integer> queue = new LinkedList<Integer>();
+        if (!indegree.containsKey(start)) {
+            return false;
+        }
+        if (indegree.get(start) > 0) {
+            return false;
+        }
+        queue.offer(start);
+        int index = 0;
+        while(!queue.isEmpty()) {
+            if (queue.size() > 1) {
+                return false;
+            }
+            int curNode = queue.poll();
+            if (curNode != org[index]) {
+                return false;
+            }
+            if (index == org.length - 1 && curNode == org[index]) {
+                return true;
+            }
+            if (graph.containsKey(curNode)) {
+                Set<Integer> neighbours = graph.get(curNode);
+                for (int neighbour : neighbours) {
+                    indegree.put(neighbour, indegree.get(neighbour) - 1);
+                    if (indegree.get(neighbour) == 0) {
+                        queue.add(neighbour);
+                    }
+                }
+                ++index;
+            }
+        }
+        return index == org.length - 1;
+    }
+
     public static void main(String[] args) {
         GoogleInterview g = new GoogleInterview();
 //        System.out.println(g.lengthOfLongestSubstringTwoDistinct("abaccc"));
@@ -874,7 +1448,25 @@ public class GoogleInterview {
 //        g.removeStones(stones);
 //        String strs[] = {"abat","baba","atan","atal"};
 //        g.wordSquares(strs);
-        int val[][] = {{1,2},{2,3},{3,4},{4,1},{1,5}};
-        g.findRedundantDirectedConnection(val);
+//        int val[][] = {{1,2},{2,3},{3,4},{4,1},{1,5}};
+//        g.findRedundantDirectedConnection(val);
+//        g.coinChange(new int[]{1,2,5}, 11);
+
+//        LRUCache c = new LRUCache(2);
+//        c.put(2, 6);
+//        c.put(2, 2);
+//        c.get(1);
+//        c.put(1, 5);
+////        c.get(2);
+//        c.put(1, 2);
+//        c.get(1);
+//        c.get(2);
+
+        int[] a = {1};
+        List<List<Integer>> b = new ArrayList<>();
+        b.add(Arrays.asList(1));
+        b.add(Arrays.asList(1));
+        b.add(Arrays.asList(1));
+        g.sequenceReconstruction(a, b);
     }
 }
